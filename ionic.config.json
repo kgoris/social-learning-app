@@ -1,0 +1,8 @@
+{
+  "name": "socialLearningApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "a02eb823"
+}
