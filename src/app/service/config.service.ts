@@ -12,9 +12,17 @@ export class ConfigService {
 
   public logout_url = this._api_url + '/logout';
 
-  public change_password_url = this._api_url + '/changePassword';
 
-  public whoami_url = this._api_url + '/whoami';
 
   public student_url = this._api_url + '/students';
+  public questionnaires_url = this._api_url + '/questionnaires';
+
+  public reset_credentials_url = this.student_url + '/reset-credentials';
+  public whoami_url = this.student_url + '/whoami';
+  public change_password_url = this.student_url + '/changePassword';
+  public questionnaires_find_by_questionnaire_query = this.questionnaires_url + '/find_by_student_and_access_type';
+
+  
+
+
 }

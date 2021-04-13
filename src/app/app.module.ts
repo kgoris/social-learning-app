@@ -11,19 +11,27 @@ import { AppComponent } from './app.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { WelcomeService } from './welcome/welcome.service';
 import { ConfigService } from './service/config.service';
-import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHandler, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { LoginComponent } from './login/login.component';
+import { AuthService } from './service/auth.service';
+import { FormsModule } from '@angular/forms';
+import { ApiService } from './service/api.service';
+import { UserService } from './service/user.service';
+import { TokenInterceptor } from './service/token-interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    LoginComponent
   ],
   entryComponents: [],
   imports: [
     BrowserModule, 
     IonicModule.forRoot(), 
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [
     StatusBar,
@@ -31,7 +39,15 @@ import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http'
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     WelcomeService,
     ConfigService,
-    HttpClient
+    AuthService,
+    HttpClient,
+    ApiService,
+    UserService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

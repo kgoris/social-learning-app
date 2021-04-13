@@ -7,7 +7,7 @@ export class Student {
     id: number;
     firstName: string;
     name : string;
-    email: string;
+    username: string;
     password: string;
 
 }
