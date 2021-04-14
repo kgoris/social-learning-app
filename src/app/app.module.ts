@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicModule, IonicRouteStrategy, MenuController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
@@ -18,12 +18,16 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from './service/api.service';
 import { UserService } from './service/user.service';
 import { TokenInterceptor } from './service/token-interceptor';
+import { HeaderComponent } from './header/header.component';
+import { WorkComponent } from './work/work.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     WelcomeComponent,
-    LoginComponent
+    LoginComponent,
+    WorkComponent,
+    HeaderComponent
   ],
   entryComponents: [],
   imports: [
@@ -43,6 +47,7 @@ import { TokenInterceptor } from './service/token-interceptor';
     HttpClient,
     ApiService,
     UserService,
+    MenuController,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

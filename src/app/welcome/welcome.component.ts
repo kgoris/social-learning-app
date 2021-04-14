@@ -26,7 +26,6 @@ export class WelcomeComponent  implements OnInit{
   
   constructor(
     private welcomeService:WelcomeService,
-    private menu : MenuController,
     private userService: UserService,
     private http: HttpClient,
     private authService: AuthService) {
@@ -40,12 +39,7 @@ export class WelcomeComponent  implements OnInit{
 
   }
 
-  openMenu(){
-    this.menu.enable(true, "first");
-  }
-  closeMenu(){
-    this.menu.close('first');
-  }
+
 
   logout() {
     this.authService.logout();
@@ -84,4 +78,11 @@ export class WelcomeComponent  implements OnInit{
       questionnaireReceived => this.questionnaireObserve = questionnaireReceived
     );
   }
+  /*
+  openMenu(){
+    this.menu.enable(true, "first");
+  }
+  closeMenu(){
+    this.menu.close('first');
+  }*/
 }
