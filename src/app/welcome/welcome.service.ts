@@ -31,4 +31,8 @@ export class WelcomeService {
     private getQuestionnaires(questionnaireQuery : QuestionnaireQuery):Observable<Questionnaire[]>{
         return this.httpClient.post<Questionnaire[]>(this.config.questionnaires_find_by_questionnaire_query, questionnaireQuery);
     }
+
+    getQuestionnaireById(questionnaireId:number){
+        return this.httpClient.get<Questionnaire>(this.config.questionnaires_url + '/' + questionnaireId);
+    }
 }

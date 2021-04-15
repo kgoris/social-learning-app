@@ -1,0 +1,31 @@
+<app-header></app-header>
+<ion-content *ngIf="currentStudentQuestion">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{currentStudentQuestion.questionnaire.title}}</ion-card-title>
+      <ion-card-subtitle>Question {{currentStudentQuestion.question.sequenceNumber}} : {{currentStudentQuestion.question.title}}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      
+    </ion-card-content>
+  </ion-card>
+  <!--<form role="form" (submit)="submit()">
+    <ng-template *ngIf="currentStudentQuestion.question.type == "
+    <ion-item lines="full">
+      <ion-label position="floating">Email</ion-label>
+      <ion-input type="text" required  [(ngModel)]="student.username" [ngModelOptions]="{standalone: true}" ></ion-input>
+    </ion-item>
+  
+    <ion-item lines="full">
+      <ion-label position="floating">Password</ion-label>
+      <ion-input type="password" required [(ngModel)]="student.password" [ngModelOptions]="{standalone: true}" ></ion-input>
+    </ion-item>
+  
+    <ion-row>
+      <ion-col>
+      <ion-button type="submit" color="danger" expand="block">Sign In</ion-button>
+      
+      </ion-col>
+    </ion-row>
+    </form> -->
+</ion-content>

@@ -1,5 +1,42 @@
 
 <app-header></app-header>
 <ion-content>
-  <p>work</p>
+  <ion-card *ngIf="!!studentQuestions">
+    <ion-item>
+      <ion-icon name="pin" slot="start"></ion-icon>
+      <ion-label>Let's continue!</ion-label>
+    </ion-item>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let studentQuestion of studentQuestions" [routerLink]="['/questionnaire', studentQuestion.id]">
+          <ion-label>{{studentQuestion.questionnaire.title}} ({{studentQuestion.question.sequenceNumber}}/{{studentQuestion.questionnaire.questionCount}})</ion-label>
+        </ion-item>
+      </ion-list>
+      
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-item>
+      <ion-icon name="pin" slot="start"></ion-icon>
+      <ion-label>Let's start!</ion-label>
+    </ion-item>
+    <ion-card-content>
+      <ion-list>
+        
+        <ion-item color="tertiary" button>
+          <ion-icon name="sync-outline" slot="start"></ion-icon>
+          Learn my vocabulary
+        </ion-item>
+        <ion-item *ngFor="let questionnaire of questionnaires" [routerLink]="['/questionnaire/new', questionnaire.id]" color="medium" button>
+          <ion-icon name="construct-outline" slot="start"></ion-icon>
+          <ion-row>
+            <ion-label>Start {{questionnaire.title}}</ion-label>
+          </ion-row>
+          
+          
+          
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

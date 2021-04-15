@@ -20,6 +20,8 @@ import { UserService } from './service/user.service';
 import { TokenInterceptor } from './service/token-interceptor';
 import { HeaderComponent } from './header/header.component';
 import { WorkComponent } from './work/work.component';
+import { StudentQuestionService } from './service/student-question-service';
+import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,8 @@ import { WorkComponent } from './work/work.component';
     WelcomeComponent,
     LoginComponent,
     WorkComponent,
-    HeaderComponent
+    HeaderComponent,
+    QuestionnaireComponent
   ],
   entryComponents: [],
   imports: [
@@ -47,6 +50,7 @@ import { WorkComponent } from './work/work.component';
     HttpClient,
     ApiService,
     UserService,
+    StudentQuestionService,
     MenuController,
     {
       provide: HTTP_INTERCEPTORS,

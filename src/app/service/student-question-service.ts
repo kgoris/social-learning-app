@@ -1,0 +1,27 @@
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { StudentQuestion } from "../modeles/student-question";
+import { AuthService } from "./auth.service";
+import { ConfigService } from "./config.service";
+
+@Injectable()
+export class StudentQuestionService {
+    
+    constructor(private configService: ConfigService, 
+        private httpClient: HttpClient,
+        private authService: AuthService){}
+
+    findStudentQuestionsByStudent(): Observable<StudentQuestion[]>{
+        return this.httpClient.post<StudentQuestion[]>(
+                                    this.configService.student_questions_by_student_url, 
+                                    this.authService.getStudentInfo());
+    }
+
+    createStudentQuestion(questionnaireId:string): Observable<StudentQuestion>{
+        return this.httpClient.post<StudentQuestion>(
+            this.configService.student_questions_create + '?questionnaireId=' + questionnaireId,
+            this.authService.getStudentInfo()
+        )
+    }
+}
