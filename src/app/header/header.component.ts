@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Student } from '../modeles/student';
 import { AuthService } from '../service/auth.service';
@@ -9,6 +9,8 @@ import { AuthService } from '../service/auth.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
+
+  @Input("menuIdCustom") menuIdCustom;
 
   constructor(private authService: AuthService,
     private menu : MenuController) { }
@@ -21,6 +23,13 @@ export class HeaderComponent implements OnInit {
       return student.firstName
     }
     return null;
+  }
+  getMenuId(){
+    return this.menuIdCustom;
+  }
+
+  home(){
+    alert("hello");
   }
 
   getUserName(){
@@ -35,10 +44,10 @@ export class HeaderComponent implements OnInit {
   }
 
   openMenu(){
-    this.menu.enable(true, "first");
+    this.menu.enable(true, this.menuIdCustom);
   }
   closeMenu(){
-    this.menu.close('first');
+    this.menu.close(this.menuIdCustom);
   }
 
   logout() {

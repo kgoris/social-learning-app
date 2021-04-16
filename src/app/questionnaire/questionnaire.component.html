@@ -1,4 +1,4 @@
-<app-header></app-header>
+<app-header menuIdCustom="questionnaireHeader"></app-header>
 <ion-content *ngIf="currentStudentQuestion">
   <ion-card>
     <ion-card-header>
@@ -6,26 +6,48 @@
       <ion-card-subtitle>Question {{currentStudentQuestion.question.sequenceNumber}} : {{currentStudentQuestion.question.title}}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      
+      <form role="form" (submit)="submit()">
+        <ng-template *ngIf="trueFalseQuestion()" >
+          
+        </ng-template>
+        <ion-list *ngIf="trueFalseQuestion()">
+          <ion-radio-group value="trueFalse" [(ngModel)]="currentStudentQuestion.answer.value">
+            <ion-list-header>
+              <ion-label>Name</ion-label>
+            </ion-list-header>
+            <ion-item>
+              <ion-label>True</ion-label>
+              <ion-radio slot="end" value="true"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>False</ion-label>
+              <ion-radio slot="end" value="false"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+      </ion-list>
+    
+        <ion-input  *ngIf="freeTextQuestion()" type="text" color="tertiary" class="box" clearInput  
+        placeholder="Enter answer" required  [(ngModel)]="currentStudentQuestion.answer.value" [ngModelOptions]="{standalone: true}" ></ion-input>
+        
+        
+        <ion-row>
+          <ion-col>
+            <ion-button type="submit" color="danger" expand="block">Sign In</ion-button>        
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button *ngIf="currentStudentQuestion.question.sequenceNumber>1" color="tertiary" size="medium" expand="block" (click)="previous()" >Previous</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button *ngIf="currentStudentQuestion.question.sequenceNumber < currentStudentQuestion.questionnaire.questionCount" color="tertiary" size="medium" expand="block" (click)="next()" >Next</ion-button>
+          </ion-col>
+
+          
+        </ion-row>
+        
+      </form> 
     </ion-card-content>
   </ion-card>
-  <!--<form role="form" (submit)="submit()">
-    <ng-template *ngIf="currentStudentQuestion.question.type == "
-    <ion-item lines="full">
-      <ion-label position="floating">Email</ion-label>
-      <ion-input type="text" required  [(ngModel)]="student.username" [ngModelOptions]="{standalone: true}" ></ion-input>
-    </ion-item>
   
-    <ion-item lines="full">
-      <ion-label position="floating">Password</ion-label>
-      <ion-input type="password" required [(ngModel)]="student.password" [ngModelOptions]="{standalone: true}" ></ion-input>
-    </ion-item>
-  
-    <ion-row>
-      <ion-col>
-      <ion-button type="submit" color="danger" expand="block">Sign In</ion-button>
-      
-      </ion-col>
-    </ion-row>
-    </form> -->
 </ion-content>

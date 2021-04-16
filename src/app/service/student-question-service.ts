@@ -24,4 +24,18 @@ export class StudentQuestionService {
             this.authService.getStudentInfo()
         )
     }
+
+    nextStudentQuestion(studentQuestion:StudentQuestion): Observable<StudentQuestion>{
+        return this.httpClient.post<StudentQuestion>(
+            this.configService.student_questions_next,
+            studentQuestion
+        )
+    }
+
+    previousStudentQuestion(studentQuestion:StudentQuestion): Observable<StudentQuestion>{
+        return this.httpClient.post<StudentQuestion>(
+            this.configService.student_questions_previous,
+            studentQuestion
+        )
+    }
 }

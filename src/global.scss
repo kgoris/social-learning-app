@@ -24,3 +24,14 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+.box {
+    border-color: #403E39;
+    border-width: thin;
+    border-style: solid;
+    border-radius: 3px;
+}
+
+.custom-menu-item.item {
+    pointer-events: auto !important;
+    }
