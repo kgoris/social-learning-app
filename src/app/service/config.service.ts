@@ -25,7 +25,6 @@ export class ConfigService {
 
   public student_questions_by_student_url = this.student_question_url + '/find-by-student';
   public student_questions_create = this.student_question_url + '/create-by-questionnaireId-and-student';
-  
   public student_questions_next = this.student_question_url + '/next';
   public student_questions_previous = this.student_question_url + '/previous';
 

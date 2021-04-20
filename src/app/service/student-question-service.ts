@@ -38,4 +38,8 @@ export class StudentQuestionService {
             studentQuestion
         )
     }
+
+    findById(id:string): Observable<StudentQuestion>{
+        return this.httpClient.get<StudentQuestion>(this.configService.student_question_url + '/' + id);
+    }
 }

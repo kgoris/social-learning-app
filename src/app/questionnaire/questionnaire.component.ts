@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { mergeMap, switchMap } from 'rxjs/operators';
 import { Answer } from '../modeles/answer';
@@ -18,6 +18,7 @@ export class QuestionnaireComponent implements OnInit {
   loadingStudentQuestion : Observable<StudentQuestion>;
 
   constructor(private route: ActivatedRoute, 
+              private router: Router,
               private studentQuestionService: StudentQuestionService,
               private welcomeService: WelcomeService) { }
 
@@ -28,16 +29,19 @@ export class QuestionnaireComponent implements OnInit {
           let currentStudentQuestionId = params.get('currentSudentQuestionId');
           if(currentStudentQuestionId){
             //get the related student question
+            return this.studentQuestionService.findById(currentStudentQuestionId)
           }else if(questionnaireId){
             //create a new student question for the related questionnaireId & current student
+            return this.studentQuestionService.createStudentQuestion(questionnaireId)
           }
-          return this.studentQuestionService.createStudentQuestion(questionnaireId);
+          ;
         }
       )
     ).subscribe(value => {
       this.currentStudentQuestion = value;
-      this.currentStudentQuestion.answer = new Answer();
-      
+      if(!this.currentStudentQuestion.answer){
+        this.currentStudentQuestion.answer = new Answer();
+      }      
     })  
   }
 
@@ -63,13 +67,19 @@ export class QuestionnaireComponent implements OnInit {
 
   next(){
     this.studentQuestionService.nextStudentQuestion(this.currentStudentQuestion).subscribe(
-      studentQuestion => this.currentStudentQuestion = studentQuestion
+      studentQuestion => {
+        this.currentStudentQuestion = studentQuestion
+        this.router.navigate(['/questionnaire/' + this.currentStudentQuestion.id]);
+      } 
     )
   }
 
   previous(){
     this.studentQuestionService.previousStudentQuestion(this.currentStudentQuestion).subscribe(
-      studentQuestion => this.currentStudentQuestion = studentQuestion
+      studentQuestion => {
+        this.currentStudentQuestion = studentQuestion
+        this.router.navigate(['/questionnaire/' + this.currentStudentQuestion.id]);
+      } 
     )
   }
 

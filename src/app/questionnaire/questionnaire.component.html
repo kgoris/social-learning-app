@@ -29,12 +29,6 @@
         <ion-input  *ngIf="freeTextQuestion()" type="text" color="tertiary" class="box" clearInput  
         placeholder="Enter answer" required  [(ngModel)]="currentStudentQuestion.answer.value" [ngModelOptions]="{standalone: true}" ></ion-input>
         
-        
-        <ion-row>
-          <ion-col>
-            <ion-button type="submit" color="danger" expand="block">Sign In</ion-button>        
-          </ion-col>
-        </ion-row>
         <ion-row>
           <ion-col>
             <ion-button *ngIf="currentStudentQuestion.question.sequenceNumber>1" color="tertiary" size="medium" expand="block" (click)="previous()" >Previous</ion-button>
