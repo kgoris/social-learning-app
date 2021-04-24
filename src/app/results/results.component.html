@@ -1,0 +1,16 @@
+<ng-template *ngIf="results">
+  <ng-template *ngIf="!results.errors else arf">
+    <p>Great! All your response are correct!</p>
+  </ng-template>
+  <ng-template *ngIf="!!results.errors" #arf>
+    <ion-list>
+      <ion-item-group *ngFor="let errorItem of results.errors">
+        <ion-item>{{errorItem.questionTitle}}</ion-item>
+        <ion-item>{{errorItem.trueAnswer}}</ion-item>
+        <ion-item>{{errorItem.trueAnswer}}</ion-item>
+
+      </ion-item-group>
+    </ion-list>
+  </ng-template>
+</ng-template>
+

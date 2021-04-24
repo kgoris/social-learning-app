@@ -27,6 +27,8 @@ export class ConfigService {
   public student_questions_create = this.student_question_url + '/create-by-questionnaireId-and-student';
   public student_questions_next = this.student_question_url + '/next';
   public student_questions_previous = this.student_question_url + '/previous';
+  public student_questions_lock = this.student_question_url + '/lock';
+  public student_questions_results = this.student_question_url + '/results';
 
 
 }

@@ -14,7 +14,7 @@ import { ConfigService } from './service/config.service';
 import { HttpClient, HttpClientModule, HttpHandler, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
 import { AuthService } from './service/auth.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from './service/api.service';
 import { UserService } from './service/user.service';
 import { TokenInterceptor } from './service/token-interceptor';
@@ -22,6 +22,7 @@ import { HeaderComponent } from './header/header.component';
 import { WorkComponent } from './work/work.component';
 import { StudentQuestionService } from './service/student-question-service';
 import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
+import { ResultsComponent } from './results/results.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { QuestionnaireComponent } from './questionnaire/questionnaire.component'
     LoginComponent,
     WorkComponent,
     HeaderComponent,
-    QuestionnaireComponent
+    QuestionnaireComponent,
+    ResultsComponent
   ],
   entryComponents: [],
   imports: [
@@ -38,7 +40,8 @@ import { QuestionnaireComponent } from './questionnaire/questionnaire.component'
     IonicModule.forRoot(), 
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     StatusBar,

@@ -7,14 +7,8 @@
     </ion-card-header>
     <ion-card-content>
       <form role="form" (submit)="submit()">
-        <ng-template *ngIf="trueFalseQuestion()" >
-          
-        </ng-template>
-        <ion-list *ngIf="trueFalseQuestion()">
-          <ion-radio-group value="trueFalse" [(ngModel)]="currentStudentQuestion.answer.value">
-            <ion-list-header>
-              <ion-label>Name</ion-label>
-            </ion-list-header>
+        <ion-list radio-group *ngIf="trueFalseQuestion()" >
+          <ion-radio-group [formControl]="trueFalseFormControl" required=true value="trueFalse" [(ngModel)]="currentStudentQuestion.answer.value" >
             <ion-item>
               <ion-label>True</ion-label>
               <ion-radio slot="end" value="true"></ion-radio>
@@ -25,7 +19,9 @@
             </ion-item>
           </ion-radio-group>
       </ion-list>
-    
+        <div class="error-message" *ngIf="!checkIfFormValid()">
+        You should choose true or false
+        </div>
         <ion-input  *ngIf="freeTextQuestion()" type="text" color="tertiary" class="box" clearInput  
         placeholder="Enter answer" required  [(ngModel)]="currentStudentQuestion.answer.value" [ngModelOptions]="{standalone: true}" ></ion-input>
         
@@ -33,12 +29,14 @@
           <ion-col>
             <ion-button *ngIf="currentStudentQuestion.question.sequenceNumber>1" color="tertiary" size="medium" expand="block" (click)="previous()" >Previous</ion-button>
           </ion-col>
-          <ion-col>
-            <ion-button *ngIf="currentStudentQuestion.question.sequenceNumber < currentStudentQuestion.questionnaire.questionCount" color="tertiary" size="medium" expand="block" (click)="next()" >Next</ion-button>
-          </ion-col>
-
-          
+          <ion-col *ngIf="currentStudentQuestion.question.sequenceNumber < currentStudentQuestion.questionnaire.questionCount">
+            <ion-button  color="tertiary" size="medium" expand="block" (click)="next()" >Next</ion-button>
+          </ion-col>    
+          <ion-col *ngIf="currentStudentQuestion.question.sequenceNumber === currentStudentQuestion.questionnaire.questionCount">
+            <ion-button  color="danger" size="medium" expand="block" (click)="lock()" >Finish</ion-button>
+          </ion-col>      
         </ion-row>
+       
         
       </form> 
     </ion-card-content>

@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { Results } from "../modeles/results";
 import { StudentQuestion } from "../modeles/student-question";
 import { AuthService } from "./auth.service";
 import { ConfigService } from "./config.service";
@@ -42,4 +43,19 @@ export class StudentQuestionService {
     findById(id:string): Observable<StudentQuestion>{
         return this.httpClient.get<StudentQuestion>(this.configService.student_question_url + '/' + id);
     }
+
+    lockStudentQuestions(questionnaireId:number): Observable<any>{
+        return this.httpClient.post<any>(
+            this.configService.student_questions_lock  + '?questionnaireId=' + questionnaireId,
+            this.authService.getStudentInfo()
+        )
+    }
+
+    resuls(questionnaireId:string): Observable<Results>{
+        return this.httpClient.post<Results>(
+            this.configService.student_questions_results  + '?questionnaireId=' + questionnaireId,
+            this.authService.getStudentInfo()
+        )
+    }
+
 }

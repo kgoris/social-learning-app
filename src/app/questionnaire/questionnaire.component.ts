@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { mergeMap, switchMap } from 'rxjs/operators';
@@ -14,6 +15,8 @@ import { WelcomeService } from '../welcome/welcome.service';
 })
 export class QuestionnaireComponent implements OnInit {
 
+
+  trueFalseFormControl: FormControl;
   currentStudentQuestion : StudentQuestion;
   loadingStudentQuestion : Observable<StudentQuestion>;
 
@@ -23,6 +26,7 @@ export class QuestionnaireComponent implements OnInit {
               private welcomeService: WelcomeService) { }
 
   ngOnInit() {
+    this.initFormGroup();
     this.route.paramMap.pipe(
       mergeMap(params => {
           let questionnaireId = params.get('qid');
@@ -45,6 +49,25 @@ export class QuestionnaireComponent implements OnInit {
     })  
   }
 
+  private initFormGroup() {
+    this.trueFalseFormControl = new FormControl("", [
+      Validators.required
+    ])
+  }
+
+  private triggerFormValidation() {
+    if(this.trueFalseQuestion()){
+      this.trueFalseFormControl.updateValueAndValidity();
+      this.trueFalseFormControl.markAllAsTouched();
+    }
+  }
+
+  public checkIfFormValid(): boolean{
+    if(this.trueFalseQuestion()){
+      return !this.trueFalseFormControl.hasError('required');
+    }
+  }
+
   trueFalseQuestion(): boolean{
     return this.currentStudentQuestion.question.type === 'TRUE_FALSE'; 
   }
@@ -62,7 +85,7 @@ export class QuestionnaireComponent implements OnInit {
   }
 
   submit(){
-
+    this.triggerFormValidation();
   }
 
   next(){
@@ -72,6 +95,7 @@ export class QuestionnaireComponent implements OnInit {
         this.router.navigate(['/questionnaire/' + this.currentStudentQuestion.id]);
       } 
     )
+    this.submit();
   }
 
   previous(){
@@ -80,6 +104,17 @@ export class QuestionnaireComponent implements OnInit {
         this.currentStudentQuestion = studentQuestion
         this.router.navigate(['/questionnaire/' + this.currentStudentQuestion.id]);
       } 
+    )
+    
+  }
+
+  lock(){
+    this.triggerFormValidation();
+    if(this.checkIfFormValid())
+    this.studentQuestionService.lockStudentQuestions(this.currentStudentQuestion.questionnaire.id).subscribe(
+      value => {
+        this.router.navigate(['/results/' + this.currentStudentQuestion.questionnaire.id]);
+      }
     )
   }
 
