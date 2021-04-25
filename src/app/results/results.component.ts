@@ -14,6 +14,7 @@ export class ResultsComponent implements OnInit {
   results: Results;
 
   constructor( private route: ActivatedRoute, 
+              private router: Router,
     private studentQuestionService: StudentQuestionService) { }
 
   ngOnInit() {
@@ -23,7 +24,17 @@ export class ResultsComponent implements OnInit {
             return this.studentQuestionService.resuls(questionnaireId)
         }
       )
-    ).subscribe(value => this.results = value)  
+    ).subscribe(value => {
+        this.results = value;
+      }
+    )  
   }
+
+  reset(){
+    this.studentQuestionService.resetStudentQuestions(this.results.questionnaire.id).subscribe(
+      studentQuestion => this.router.navigate(['/questionnaire', studentQuestion.id])
+    )
+  }
+
 
 }

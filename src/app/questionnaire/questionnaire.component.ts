@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { Form, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { mergeMap, switchMap } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { Answer } from '../modeles/answer';
 import { StudentQuestion } from '../modeles/student-question';
 import { StudentQuestionService } from '../service/student-question-service';
 import { WelcomeService } from '../welcome/welcome.service';
+import * as uuid from 'uuid';
 
 @Component({
   selector: 'app-questionnaire',
@@ -17,6 +18,10 @@ export class QuestionnaireComponent implements OnInit {
 
 
   trueFalseFormControl: FormControl;
+  freeTextFormControl: FormControl;
+  multipleChoiceFormControl: FormControl;
+  uuidRef: string;
+
   currentStudentQuestion : StudentQuestion;
   loadingStudentQuestion : Observable<StudentQuestion>;
 
@@ -45,27 +50,67 @@ export class QuestionnaireComponent implements OnInit {
       this.currentStudentQuestion = value;
       if(!this.currentStudentQuestion.answer){
         this.currentStudentQuestion.answer = new Answer();
-      }      
+      }else if(this.currentStudentQuestion.answer.proposition){
+        this.currentStudentQuestion.answer.propositionId = String(this.currentStudentQuestion.answer.proposition.id);
+      }
+      this.cleanFormControls();
     })  
   }
 
   private initFormGroup() {
     this.trueFalseFormControl = new FormControl("", [
       Validators.required
+    ]);
+    this.freeTextFormControl = new FormControl("", [
+      Validators.required,
+      Validators.max(50),
+      Validators.min(1)
+    ]);
+
+    this.multipleChoiceFormControl = new FormControl("", [
+      Validators.required
     ])
+    
   }
 
   private triggerFormValidation() {
     if(this.trueFalseQuestion()){
       this.trueFalseFormControl.updateValueAndValidity();
       this.trueFalseFormControl.markAllAsTouched();
+    }else if(this.freeTextQuestion()){
+      
+      this.freeTextFormControl.markAllAsTouched();
+      this.freeTextFormControl.updateValueAndValidity();
+    }else if(this.multipleChoiceQuestion()){
+      this.multipleChoiceFormControl.updateValueAndValidity();
+      this.multipleChoiceFormControl.markAllAsTouched();
+      if(this.currentStudentQuestion.answer.propositionId){
+        this.currentStudentQuestion.answer.proposition = this.currentStudentQuestion.question.propositions
+            .filter(p => p.id === Number(this.currentStudentQuestion.answer.propositionId))[0]
+      }
     }
   }
 
   public checkIfFormValid(): boolean{
     if(this.trueFalseQuestion()){
-      return !this.trueFalseFormControl.hasError('required');
+      
+      return !this.trueFalseFormControl.hasError('required') || ! this.trueFalseFormControl.touched;
+    }else if(this.freeTextQuestion()){
+      if(!this.freeTextFormControl.touched){
+        return true;
+      }else{
+        return !this.freeTextFormControl.hasError('required') && !this.freeTextFormControl.hasError('min') && !this.freeTextFormControl.hasError('max');
+      }
+    }else if (this.multipleChoiceQuestion()){
+      return !this.multipleChoiceFormControl.hasError('required') || ! this.multipleChoiceFormControl.touched ;
     }
+  }
+
+  questionHeader(){
+    if(!this.uuidRef){
+      this.uuidRef = uuid.v4();
+    }
+    return "quetionHeader" +  this.uuidRef;
   }
 
   trueFalseQuestion(): boolean{
@@ -85,27 +130,38 @@ export class QuestionnaireComponent implements OnInit {
   }
 
   submit(){
-    this.triggerFormValidation();
+  }
+
+  cleanFormControls(){
+
+    this.multipleChoiceFormControl.setErrors({required: false});
+    this.freeTextFormControl.setErrors({required: false, min:false, max:false});
+    this.trueFalseFormControl.setErrors({required: false});
   }
 
   next(){
-    this.studentQuestionService.nextStudentQuestion(this.currentStudentQuestion).subscribe(
-      studentQuestion => {
-        this.currentStudentQuestion = studentQuestion
-        this.router.navigate(['/questionnaire/' + this.currentStudentQuestion.id]);
-      } 
-    )
-    this.submit();
+    this.triggerFormValidation();
+    if(this.checkIfFormValid()){
+    
+      this.studentQuestionService.nextStudentQuestion(this.currentStudentQuestion).subscribe(
+        studentQuestion => {
+          this.currentStudentQuestion = studentQuestion
+          this.router.navigate(['/questionnaire/' + this.currentStudentQuestion.id]);
+        } 
+      )
+    }
   }
 
   previous(){
-    this.studentQuestionService.previousStudentQuestion(this.currentStudentQuestion).subscribe(
-      studentQuestion => {
-        this.currentStudentQuestion = studentQuestion
-        this.router.navigate(['/questionnaire/' + this.currentStudentQuestion.id]);
-      } 
-    )
-    
+    this.triggerFormValidation();
+    if(this.checkIfFormValid()){
+      this.studentQuestionService.previousStudentQuestion(this.currentStudentQuestion).subscribe(
+        studentQuestion => {
+          this.currentStudentQuestion = studentQuestion
+          this.router.navigate(['/questionnaire/' + this.currentStudentQuestion.id]);
+        } 
+      )
+    }    
   }
 
   lock(){

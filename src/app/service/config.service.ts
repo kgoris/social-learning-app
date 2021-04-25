@@ -29,6 +29,7 @@ export class ConfigService {
   public student_questions_previous = this.student_question_url + '/previous';
   public student_questions_lock = this.student_question_url + '/lock';
   public student_questions_results = this.student_question_url + '/results';
+  public student_questions_reset = this.student_question_url + '/reset';
 
 
 }

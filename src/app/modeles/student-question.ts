@@ -9,4 +9,5 @@ export class StudentQuestion{
     student: Student;
     question: Question;
     questionnaire: Questionnaire;
+    locked: boolean;
 }

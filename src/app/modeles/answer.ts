@@ -4,4 +4,5 @@ export class Answer{
     id: number;
     proposition: Proposition;
     value: string;
+    propositionId: string;
 }

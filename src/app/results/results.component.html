@@ -1,16 +1,38 @@
-<ng-template *ngIf="results">
-  <ng-template *ngIf="!results.errors else arf">
+
+<app-header menuIdCustom="resultHeader"></app-header>
+<ion-content *ngIf="results" class="ion-padding">
+  
+ <ng-template *ngIf="!results.errors else arf">
     <p>Great! All your response are correct!</p>
   </ng-template>
-  <ng-template *ngIf="!!results.errors" #arf>
+  <ng-template  #arf>
     <ion-list>
-      <ion-item-group *ngFor="let errorItem of results.errors">
-        <ion-item>{{errorItem.questionTitle}}</ion-item>
-        <ion-item>{{errorItem.trueAnswer}}</ion-item>
-        <ion-item>{{errorItem.trueAnswer}}</ion-item>
-
+      <ion-item-group >
+        <ion-item *ngFor="let errorItem of results.errors">
+          <ion-label class="ion-text-wrap">
+            <ion-row>
+              <ion-text>Question: {{errorItem.questionTitle}}</ion-text>
+            </ion-row>
+            <ion-row >
+              <ion-col size="1"> <ion-icon style="color: red;" name="close-outline"></ion-icon></ion-col>
+              <ion-col>answer: {{errorItem.userAnswer}}</ion-col> 
+            </ion-row>
+            <ion-row>
+              <ion-col size="1"><ion-icon  style="color: green;" name="checkmark-outline"></ion-icon></ion-col>
+              <ion-col ><ion-text>The good answer: {{errorItem.trueAnswer}}</ion-text> </ion-col>
+            </ion-row>      
+          </ion-label>
+        </ion-item>
       </ion-item-group>
     </ion-list>
+    <ion-row>
+      <ion-col>
+        <ion-button color="tertiary" size="medium" expand="block" [routerLink]="['/work']">Go back to exercices</ion-button>
+      </ion-col>    
+      <ion-col>
+        <ion-button  color="danger" size="medium" expand="block" (click)="reset()" >Restart the questionnaire</ion-button>
+      </ion-col>      
+    </ion-row>
   </ng-template>
-</ng-template>
+</ion-content>
 

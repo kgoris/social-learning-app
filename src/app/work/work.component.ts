@@ -12,6 +12,7 @@ import { WelcomeService } from '../welcome/welcome.service';
 export class WorkComponent implements OnInit {
   
   studentQuestions : StudentQuestion[];
+  locckedStudentQuestions : StudentQuestion[];
   questionnaires: Questionnaire[];
 
   constructor(private studentQuestionService: StudentQuestionService,

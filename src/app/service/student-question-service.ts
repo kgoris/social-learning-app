@@ -58,4 +58,11 @@ export class StudentQuestionService {
         )
     }
 
+    resetStudentQuestions(questionnaireId:number): Observable<StudentQuestion>{
+        return this.httpClient.post<any>(
+            this.configService.student_questions_reset  + '?questionnaireId=' + questionnaireId,
+            this.authService.getStudentInfo()
+        )
+    }
+
 }

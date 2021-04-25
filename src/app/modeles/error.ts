@@ -1,5 +1,5 @@
 export class ErrorItem{
-    public questionTitle: string;
-    public userAnswer: string;
-    public trueAnswer: string;
+    questionTitle: string;
+    userAnswer: string;
+    trueAnswer: string;
 }
