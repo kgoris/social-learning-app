@@ -22,6 +22,7 @@ export class ConfigService {
   public whoami_url = this.student_url + '/whoami';
   public change_password_url = this.student_url + '/changePassword';
   public questionnaires_find_by_questionnaire_query = this.questionnaires_url + '/find_by_student_and_access_type';
+  public questionnaires_locked = this.questionnaires_url + '/find_locked'
 
   public student_questions_by_student_url = this.student_question_url + '/find-by-student';
   public student_questions_create = this.student_question_url + '/create-by-questionnaireId-and-student';
@@ -30,6 +31,8 @@ export class ConfigService {
   public student_questions_lock = this.student_question_url + '/lock';
   public student_questions_results = this.student_question_url + '/results';
   public student_questions_reset = this.student_question_url + '/reset';
+  public student_questions_visit = this.student_question_url + '/visit';
+  public student_questions_save = this.student_question_url + '/save';
 
 
 }

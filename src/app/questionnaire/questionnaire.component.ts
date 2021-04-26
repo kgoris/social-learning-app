@@ -166,12 +166,19 @@ export class QuestionnaireComponent implements OnInit {
 
   lock(){
     this.triggerFormValidation();
-    if(this.checkIfFormValid())
-    this.studentQuestionService.lockStudentQuestions(this.currentStudentQuestion.questionnaire.id).subscribe(
-      value => {
-        this.router.navigate(['/results/' + this.currentStudentQuestion.questionnaire.id]);
-      }
-    )
+    if(this.checkIfFormValid()){
+      this.studentQuestionService.save(this.currentStudentQuestion).subscribe(value =>{
+            this.studentQuestionService.lockStudentQuestions(this.currentStudentQuestion.questionnaire.id).subscribe(
+              value => {
+                this.router.navigate(['/results/' + this.currentStudentQuestion.questionnaire.id]);
+              }
+            )
+          }
+      
+      )
+      
+    }
+
   }
 
 

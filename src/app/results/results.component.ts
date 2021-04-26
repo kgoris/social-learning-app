@@ -15,7 +15,9 @@ export class ResultsComponent implements OnInit {
 
   constructor( private route: ActivatedRoute, 
               private router: Router,
-    private studentQuestionService: StudentQuestionService) { }
+    private studentQuestionService: StudentQuestionService) { 
+      
+    }
 
   ngOnInit() {
     this.route.paramMap.pipe(
@@ -32,7 +34,13 @@ export class ResultsComponent implements OnInit {
 
   reset(){
     this.studentQuestionService.resetStudentQuestions(this.results.questionnaire.id).subscribe(
-      studentQuestion => this.router.navigate(['/questionnaire', studentQuestion.id])
+      studentQuestion => {
+        this.router.routeReuseStrategy.shouldReuseRoute = function () {
+          return false;
+        };
+        this.router.
+        this.router.navigate(['/questionnaire', studentQuestion.id]);
+      } 
     )
   }
 

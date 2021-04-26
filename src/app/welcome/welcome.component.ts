@@ -78,6 +78,7 @@ export class WelcomeComponent  implements OnInit{
       questionnaireReceived => this.questionnaireObserve = questionnaireReceived
     );
   }
+
   /*
   openMenu(){
     this.menu.enable(true, "first");

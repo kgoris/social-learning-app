@@ -32,6 +32,11 @@ export class WelcomeService {
         return this.httpClient.post<Questionnaire[]>(this.config.questionnaires_find_by_questionnaire_query, questionnaireQuery);
     }
 
+    getQuestionnaireLocked(){
+        let questionnaireQuery : QuestionnaireQuery = new QuestionnaireQuery(this.authService.getStudentInfo(), QuestionnaireQuery.WORK_ACCESS_TYPE);
+        return this.httpClient.post<Questionnaire[]>(this.config.questionnaires_locked, questionnaireQuery);
+    }
+
     getQuestionnaireById(questionnaireId:number){
         return this.httpClient.get<Questionnaire>(this.config.questionnaires_url + '/' + questionnaireId);
     }

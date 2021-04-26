@@ -40,6 +40,13 @@ export class StudentQuestionService {
         )
     }
 
+    save(studentQuestion: StudentQuestion): Observable<StudentQuestion>{
+        return this.httpClient.post<StudentQuestion>(
+            this.configService.student_questions_save,
+            studentQuestion
+        )
+    }
+
     findById(id:string): Observable<StudentQuestion>{
         return this.httpClient.get<StudentQuestion>(this.configService.student_question_url + '/' + id);
     }
@@ -61,6 +68,13 @@ export class StudentQuestionService {
     resetStudentQuestions(questionnaireId:number): Observable<StudentQuestion>{
         return this.httpClient.post<any>(
             this.configService.student_questions_reset  + '?questionnaireId=' + questionnaireId,
+            this.authService.getStudentInfo()
+        )
+    }
+
+    visit(questionnaireId: number): Observable<StudentQuestion>{
+        return this.httpClient.post<StudentQuestion>(
+            this.configService.student_questions_visit  + '?questionnaireId=' + questionnaireId,
             this.authService.getStudentInfo()
         )
     }

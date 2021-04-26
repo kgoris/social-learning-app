@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { Questionnaire } from '../modeles/questionnaire';
 import { StudentQuestion } from '../modeles/student-question';
 import { StudentQuestionService } from '../service/student-question-service';
@@ -12,11 +13,18 @@ import { WelcomeService } from '../welcome/welcome.service';
 export class WorkComponent implements OnInit {
   
   studentQuestions : StudentQuestion[];
-  locckedStudentQuestions : StudentQuestion[];
   questionnaires: Questionnaire[];
+  lockedQuestionnaires: Questionnaire[];
 
   constructor(private studentQuestionService: StudentQuestionService,
-              private welcomeService: WelcomeService) { }
+              private router: Router,
+              private welcomeService: WelcomeService) {
+                router.events.subscribe(event => {
+                  if (event instanceof NavigationEnd) {
+                    this.ngOnInit();
+                  }
+                });
+               }
 
   ngOnInit() {
     this.studentQuestionService.findStudentQuestionsByStudent()
@@ -27,6 +35,9 @@ export class WorkComponent implements OnInit {
     );
     this.welcomeService.getQuestionnairesWork().subscribe(
       questionnaireReceived => this.questionnaires = questionnaireReceived
+    );
+    this.welcomeService.getQuestionnaireLocked().subscribe(
+      lq => this.lockedQuestionnaires = lq
     );
   }
 
@@ -41,5 +52,14 @@ export class WorkComponent implements OnInit {
   
   startReviewModule(){
 
+  }
+
+  visitQuestionnaire(questionnaireToVisit: Questionnaire){
+    this.studentQuestionService.visit(questionnaireToVisit.id).subscribe(
+      sq => {
+        this.router.navigate(['/questionnaire', sq.id])
+      }
+    )
+    
   }
 }
