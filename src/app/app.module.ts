@@ -23,6 +23,7 @@ import { WorkComponent } from './work/work.component';
 import { StudentQuestionService } from './service/student-question-service';
 import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
 import { ResultsComponent } from './results/results.component';
+import { WebsocketServiceService } from './websocket-service.service';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { ResultsComponent } from './results/results.component';
     ApiService,
     UserService,
     StudentQuestionService,
+    WebsocketServiceService,
     MenuController,
     {
       provide: HTTP_INTERCEPTORS,

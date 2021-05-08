@@ -38,7 +38,6 @@ export class ResultsComponent implements OnInit {
         this.router.routeReuseStrategy.shouldReuseRoute = function () {
           return false;
         };
-        this.router.
         this.router.navigate(['/questionnaire', studentQuestion.id]);
       } 
     )

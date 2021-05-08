@@ -34,5 +34,5 @@ export class ConfigService {
   public student_questions_visit = this.student_question_url + '/visit';
   public student_questions_save = this.student_question_url + '/save';
 
-
+  public websocket_ws = environment.backUrl + '/gkz-stomp-endpoint';
 }
