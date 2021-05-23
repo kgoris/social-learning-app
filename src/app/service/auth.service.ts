@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { tap } from "rxjs/internal/operators/tap";
 import { Student } from "../modeles/student";
 import { Token } from "../modeles/token";
@@ -23,7 +24,8 @@ export class AuthService {
 
     constructor(private http: HttpClient, 
                 private config: ConfigService,
-                private userService: UserService) {
+                private userService: UserService, 
+                private router: Router) {
     }
 
     authenticate(credentials, callback) {
@@ -57,7 +59,10 @@ export class AuthService {
             value => {
                 this.doLoginUser(user.username, new Tokens(value.access_token, null));
                 this.userService.getMyInfo().subscribe(
-                    value => this.storeStudentInfo(value)
+                    value => {
+                      this.storeStudentInfo(value);
+                      this.router.navigate(['/home']);
+                    }
                 );
             },
             error => {

@@ -24,6 +24,10 @@ import { StudentQuestionService } from './service/student-question-service';
 import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
 import { ResultsComponent } from './results/results.component';
 import { WebsocketServiceService } from './websocket-service.service';
+import { ActivityService } from './service/activity.service';
+import { StudentService } from './service/student.service';
+import { AuthGuardService } from './guard/auth-guard.service';
+import { ObserveComponent } from './observe/observe.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +37,8 @@ import { WebsocketServiceService } from './websocket-service.service';
     WorkComponent,
     HeaderComponent,
     QuestionnaireComponent,
-    ResultsComponent
+    ResultsComponent,
+    ObserveComponent
   ],
   entryComponents: [],
   imports: [
@@ -56,7 +61,10 @@ import { WebsocketServiceService } from './websocket-service.service';
     UserService,
     StudentQuestionService,
     WebsocketServiceService,
+    ActivityService,
     MenuController,
+    StudentService,
+    AuthGuardService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

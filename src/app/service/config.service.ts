@@ -17,6 +17,7 @@ export class ConfigService {
   public student_url = this._api_url + '/students';
   public questionnaires_url = this._api_url + '/questionnaires';
   public student_question_url = this._api_url + '/student-questions';
+  public activity_url = this._api_url + '/activities'
 
   public reset_credentials_url = this.student_url + '/reset-credentials';
   public whoami_url = this.student_url + '/whoami';
@@ -33,6 +34,8 @@ export class ConfigService {
   public student_questions_reset = this.student_question_url + '/reset';
   public student_questions_visit = this.student_question_url + '/visit';
   public student_questions_save = this.student_question_url + '/save';
+
+  public activity_student_to_observe = this.activity_url + 'working-students';
 
   public websocket_ws = environment.backUrl + '/gkz-stomp-endpoint';
 }

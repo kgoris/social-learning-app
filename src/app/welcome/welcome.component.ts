@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { MenuController } from '@ionic/angular';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { Questionnaire } from '../modeles/questionnaire';
@@ -28,6 +29,7 @@ export class WelcomeComponent  implements OnInit{
     private welcomeService:WelcomeService,
     private userService: UserService,
     private http: HttpClient,
+    private router: Router,
     private authService: AuthService) {
   }
 
@@ -79,11 +81,7 @@ export class WelcomeComponent  implements OnInit{
     );
   }
 
-  /*
-  openMenu(){
-    this.menu.enable(true, "first");
+  goToWork(){
+    this.router.navigate(['/work/' + this.authService.getStudentInfo().id]);
   }
-  closeMenu(){
-    this.menu.close('first');
-  }*/
 }

@@ -14,4 +14,8 @@ export class StudentService {
     public getAllStudents():Observable<Student[]>{
         return this.httpClient.get<Student[]>(this.configService.student_url,  {headers: this.header});
     }
+
+    public findById(id:string):Observable<Student>{
+        return this.httpClient.get<Student>(this.configService.student_url + "/" + id,  {headers: this.header});
+    }
 }

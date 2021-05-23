@@ -1,0 +1,18 @@
+<app-header menuIdCustom="observeComponent"></app-header>
+<ion-content *ngIf="activitiesToObserve">
+  <ion-card>
+    <ion-card-header>
+      List of connected students
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let activity of activitiesToObserve" (click)="observe(activity)">
+          <ion-label>{{activity.student.firstName}} {{activity.student.name}}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+<ion-content *ngIf="!activitiesToObserve">
+  <p>No student is connected :(</p>
+</ion-content>

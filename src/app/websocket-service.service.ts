@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import {Stomp} from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
+import { Activity } from './modeles/activity';
+import { AuthService } from './service/auth.service';
 import { ConfigService } from './service/config.service';
 
 @Injectable({
@@ -8,7 +11,9 @@ import { ConfigService } from './service/config.service';
 })
 export class WebsocketServiceService {
 
-  constructor(private configService: ConfigService) { }
+  constructor(private configService: ConfigService,
+              private authService: AuthService,
+              private router: Router) { }
   stompClient = null;
   disabled = true;
 
@@ -20,7 +25,7 @@ export class WebsocketServiceService {
     }
   }
 
-  connect(functionCallback:any) {
+  connect() {
     const socket = new SockJS('http://localhost:9080/gkz-stomp-endpoint');
     this.stompClient = Stomp.over(socket);
 
@@ -42,12 +47,23 @@ export class WebsocketServiceService {
     console.log('Disconnected!');
   }
 
+  onMessageReceived(message){
+    let activity: Activity = JSON.parse(message.body);
+    this.onActivityReceived(activity);
+  }
+
+  onActivityReceived(activity: Activity){
+    if(activity.student.id !== this.authService.getStudentInfo().id){
+      if(activity.ressourceType === "WORK" && activity.type === "DISPLAY"){
+        this.router.navigate(['/work', activity.student.id]);
+      }
+    }
+  }
+
   sendInfo(info:any) {
-    this.stompClient.subscribe('/topic/hi', function (hello) {
-      alert(JSON.parse(hello.body).studentDto.firstName);
-    });
+    this.stompClient.subscribe('/topic/activity', this.onMessageReceived);
     this.stompClient.send(
-      '/gkz/hello',
+      '/gkz/activity',
       {},
       JSON.stringify(info)
     );

@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Results } from "../modeles/results";
+import { Student } from "../modeles/student";
 import { StudentQuestion } from "../modeles/student-question";
 import { AuthService } from "./auth.service";
 import { ConfigService } from "./config.service";
@@ -13,10 +14,19 @@ export class StudentQuestionService {
         private httpClient: HttpClient,
         private authService: AuthService){}
 
-    findStudentQuestionsByStudent(): Observable<StudentQuestion[]>{
+    getStudent(student:Student){
+        if(student){
+            return student;
+        }else{
+            return this.authService.getStudentInfo();
+        }
+        
+    }
+
+    findStudentQuestionsByStudent(student:Student): Observable<StudentQuestion[]>{
         return this.httpClient.post<StudentQuestion[]>(
                                     this.configService.student_questions_by_student_url, 
-                                    this.authService.getStudentInfo());
+                                    this.getStudent(student));
     }
 
     createStudentQuestion(questionnaireId:string): Observable<StudentQuestion>{

@@ -14,7 +14,6 @@ export class LoginComponent implements OnInit {
   student : Student;
 
   constructor(private auth: AuthService, 
-              private http: HttpClient, 
               private router: Router) { }
 
   ngOnInit() {
@@ -23,6 +22,7 @@ export class LoginComponent implements OnInit {
 
   
   login() {
-    this.auth.login(this.student)
+    this.auth.login(this.student);
+   
   }
 }

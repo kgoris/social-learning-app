@@ -18,7 +18,7 @@
 					</ion-button>
 				</div>
 				<div *ngIf="!!questionnaireObserve"> 
-					<ion-button  [routerLink]="['/work']" >
+					<ion-button  (click)="goToWork()">
 						<ion-icon name="play-outline"></ion-icon>
 						<ion-label>Work on the exercices</ion-label>
 					</ion-button>
