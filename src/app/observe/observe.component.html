@@ -1,5 +1,5 @@
 <app-header menuIdCustom="observeComponent"></app-header>
-<ion-content *ngIf="activitiesToObserve">
+<ion-content *ngIf="isActivitiesPresent()">
   <ion-card>
     <ion-card-header>
       List of connected students
@@ -13,6 +13,11 @@
     </ion-card-content>
   </ion-card>
 </ion-content>
-<ion-content *ngIf="!activitiesToObserve">
-  <p>No student is connected :(</p>
+<ion-content *ngIf="!isActivitiesPresent()">
+  <ion-card>
+    <ion-card-content>
+      <p> No student is connected :(</p>
+    </ion-card-content>
+  </ion-card>
+  
 </ion-content>

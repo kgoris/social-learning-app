@@ -23,6 +23,7 @@ export class WorkComponent implements OnInit {
   lockedQuestionnaires: Questionnaire[];
   workingStudent: Student;  
   activitySent: boolean = false;
+  observeMode : boolean = false;
 
   constructor(private studentQuestionService: StudentQuestionService,
               private router: Router,
@@ -43,6 +44,7 @@ export class WorkComponent implements OnInit {
     this.route.paramMap.pipe(
       mergeMap(params => {
         let studentId = params.get('studentId');
+        this.observeMode = params.get('readonly') == "true";
         return this.studentService.findById(studentId);
       })
     ).subscribe(student => {
@@ -58,14 +60,14 @@ export class WorkComponent implements OnInit {
           this.studentQuestions = value;        
         } 
       );
-      this.welcomeService.getQuestionnairesWork().subscribe(
+      this.welcomeService.getQuestionnairesWork(this.workingStudent).subscribe(
         questionnaireReceived => this.questionnaires = questionnaireReceived
       );
-      this.welcomeService.getQuestionnaireLocked().subscribe(
+      this.welcomeService.getQuestionnaireLocked(this.workingStudent).subscribe(
         lq => this.lockedQuestionnaires = lq
       );
     })
-    this.websocketService.connect();
+    
   }
 
   selectAStudentQuestion(studentQuestion: StudentQuestion){
@@ -80,9 +82,6 @@ export class WorkComponent implements OnInit {
 
   }
 
-  listenToWebsocket(hello){
-    alert(hello);
-  }
 
   testWS(){
     this.websocketService.sendInfo(this.authService.getStudentInfo());
@@ -92,7 +91,7 @@ export class WorkComponent implements OnInit {
     
     this.studentQuestionService.visit(questionnaireToVisit.id).subscribe(
       sq => {
-        this.router.navigate(['/questionnaire', sq.id])
+        this.router.navigate(['/questionnaire', sq.id, this.workingStudent.id, 'false'])
       }
     )
     

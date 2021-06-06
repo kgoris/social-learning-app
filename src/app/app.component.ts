@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { take, finalize } from 'rxjs/operators';
 import { UserService } from './service/user.service';
+import { WebsocketServiceService } from './websocket-service.service';
 
 
 @Component({
@@ -24,7 +25,8 @@ export class AppComponent{
     private authService: AuthService,
     private http: HttpClient, 
     private router: Router,
-    private userService: UserService
+    private userService: UserService,    
+    private websocketService : WebsocketServiceService,
   ) {
     this.initializeApp();
   }
@@ -37,5 +39,6 @@ export class AppComponent{
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
+    this.websocketService.connect();
   }
 }

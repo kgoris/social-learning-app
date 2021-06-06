@@ -27,10 +27,10 @@
     </ion-list>
     <ion-row>
       <ion-col>
-        <ion-button color="tertiary" size="medium" expand="block" [routerLink]="['/work']">Go back to exercices</ion-button>
+        <ion-button [disabled] = "observeMode" color="tertiary" size="medium" expand="block" [routerLink]="['/work', connectedStudentId, 'false']">Go back to exercices</ion-button>
       </ion-col>    
       <ion-col>
-        <ion-button  color="danger" size="medium" expand="block" (click)="reset()" >Restart the questionnaire</ion-button>
+        <ion-button [disabled] = "observeMode" color="danger" size="medium" expand="block" (click)="reset()" >Restart the questionnaire</ion-button>
       </ion-col>      
     </ion-row>
   </ng-template>

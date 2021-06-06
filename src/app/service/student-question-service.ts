@@ -68,10 +68,10 @@ export class StudentQuestionService {
         )
     }
 
-    resuls(questionnaireId:string): Observable<Results>{
+    resuls(questionnaireId:string, student:Student): Observable<Results>{
         return this.httpClient.post<Results>(
             this.configService.student_questions_results  + '?questionnaireId=' + questionnaireId,
-            this.authService.getStudentInfo()
+            student
         )
     }
 

@@ -18,8 +18,8 @@ export class WelcomeService {
             private authService: AuthService,
             private config: ConfigService){}
 
-    getQuestionnairesWork(){
-        let questionnaireQuery : QuestionnaireQuery = new QuestionnaireQuery(this.authService.getStudentInfo(), QuestionnaireQuery.WORK_ACCESS_TYPE);
+    getQuestionnairesWork(student: Student){
+        let questionnaireQuery : QuestionnaireQuery = new QuestionnaireQuery(student, QuestionnaireQuery.WORK_ACCESS_TYPE);
         return this.getQuestionnaires(questionnaireQuery);
     }
 
@@ -32,8 +32,8 @@ export class WelcomeService {
         return this.httpClient.post<Questionnaire[]>(this.config.questionnaires_find_by_questionnaire_query, questionnaireQuery);
     }
 
-    getQuestionnaireLocked(){
-        let questionnaireQuery : QuestionnaireQuery = new QuestionnaireQuery(this.authService.getStudentInfo(), QuestionnaireQuery.WORK_ACCESS_TYPE);
+    getQuestionnaireLocked(student:Student){
+        let questionnaireQuery : QuestionnaireQuery = new QuestionnaireQuery(student, QuestionnaireQuery.WORK_ACCESS_TYPE);
         return this.httpClient.post<Questionnaire[]>(this.config.questionnaires_locked, questionnaireQuery);
     }
 

@@ -25,22 +25,22 @@ const routes: Routes = [
     component: LoginComponent,  
   },
   { 
-    path: 'work/:studentId', 
+    path: 'work/:studentId/:readonly', 
     component: WorkComponent,
     canActivate: [AuthGuardService]
   },
   { 
-    path: 'questionnaire/new/:qid', 
+    path: 'questionnaire/new/:qid/:studentId/:readonly', 
     component: QuestionnaireComponent,
     canActivate: [AuthGuardService]
   },
   { 
-    path: 'questionnaire/:currentSudentQuestionId', 
+    path: 'questionnaire/:currentSudentQuestionId/:studentId/:readonly', 
     component: QuestionnaireComponent,
     canActivate: [AuthGuardService]
   },
   { 
-    path: 'results/:id', 
+    path: 'results/:id/:studentId/:readonly', 
     component: ResultsComponent,
     canActivate: [AuthGuardService]
   },

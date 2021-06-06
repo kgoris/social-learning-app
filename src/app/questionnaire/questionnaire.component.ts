@@ -8,6 +8,11 @@ import { StudentQuestion } from '../modeles/student-question';
 import { StudentQuestionService } from '../service/student-question-service';
 import { WelcomeService } from '../welcome/welcome.service';
 import * as uuid from 'uuid';
+import { WebsocketServiceService } from '../websocket-service.service';
+import { Student } from '../modeles/student';
+import { ActivityService } from '../service/activity.service';
+import { AuthService } from '../service/auth.service';
+import { Proposition } from '../modeles/proposition';
 
 @Component({
   selector: 'app-questionnaire',
@@ -21,14 +26,21 @@ export class QuestionnaireComponent implements OnInit {
   freeTextFormControl: FormControl;
   multipleChoiceFormControl: FormControl;
   uuidRef: string;
-
+  workingStudent: Student;  
+  activitySent: boolean = false;
+  observeMode : boolean = false;
+  connectedStudentId: number;
+  
   currentStudentQuestion : StudentQuestion;
   loadingStudentQuestion : Observable<StudentQuestion>;
 
   constructor(private route: ActivatedRoute, 
               private router: Router,
               private studentQuestionService: StudentQuestionService,
-              private welcomeService: WelcomeService) { }
+              private welcomeService: WelcomeService,
+              private activityService: ActivityService,
+              private authService: AuthService
+              ) { }
 
   ngOnInit() {
     this.initFormGroup();
@@ -36,6 +48,9 @@ export class QuestionnaireComponent implements OnInit {
       mergeMap(params => {
           let questionnaireId = params.get('qid');
           let currentStudentQuestionId = params.get('currentSudentQuestionId');
+          this.connectedStudentId = +params.get('studentId');
+          this.observeMode = params.get('readonly') == "true";
+
           if(currentStudentQuestionId){
             //get the related student question
             return this.studentQuestionService.findById(currentStudentQuestionId)
@@ -48,6 +63,12 @@ export class QuestionnaireComponent implements OnInit {
       )
     ).subscribe(value => {
       this.currentStudentQuestion = value;
+    
+      if(this.connectedStudentId === this.authService.getStudentInfo().id){
+        this.activityService.notifyDisplayQuestionnaire(this.currentStudentQuestion.student, this.currentStudentQuestion.id);
+        this.activitySent = true;
+      }
+      
       if(!this.currentStudentQuestion.answer){
         this.currentStudentQuestion.answer = new Answer();
       }else if(this.currentStudentQuestion.answer.proposition){
@@ -132,6 +153,15 @@ export class QuestionnaireComponent implements OnInit {
   submit(){
   }
 
+  multiChanged(propositionId){
+    if(propositionId){
+      let proposition: Proposition = this.currentStudentQuestion.question.propositions
+      .filter(p => p.id === Number(propositionId))[0];
+      this.activityService.notifiyTypeAnswer(this.currentStudentQuestion, proposition, null);
+    }
+    
+  }
+
   cleanFormControls(){
 
     this.multipleChoiceFormControl.setErrors({required: false});
@@ -146,7 +176,7 @@ export class QuestionnaireComponent implements OnInit {
       this.studentQuestionService.nextStudentQuestion(this.currentStudentQuestion).subscribe(
         studentQuestion => {
           this.currentStudentQuestion = studentQuestion
-          this.router.navigate(['/questionnaire/' + this.currentStudentQuestion.id]);
+          this.router.navigate(['/questionnaire', this.currentStudentQuestion.id, this.currentStudentQuestion.student.id, 'false']);
         } 
       )
     }
@@ -158,7 +188,7 @@ export class QuestionnaireComponent implements OnInit {
       this.studentQuestionService.previousStudentQuestion(this.currentStudentQuestion).subscribe(
         studentQuestion => {
           this.currentStudentQuestion = studentQuestion
-          this.router.navigate(['/questionnaire/' + this.currentStudentQuestion.id]);
+          this.router.navigate(['/questionnaire', this.currentStudentQuestion.id, this.currentStudentQuestion.student.id, 'false']);
         } 
       )
     }    
@@ -170,7 +200,7 @@ export class QuestionnaireComponent implements OnInit {
       this.studentQuestionService.save(this.currentStudentQuestion).subscribe(value =>{
             this.studentQuestionService.lockStudentQuestions(this.currentStudentQuestion.questionnaire.id).subscribe(
               value => {
-                this.router.navigate(['/results/' + this.currentStudentQuestion.questionnaire.id]);
+                this.router.navigate(['/results', this.currentStudentQuestion.questionnaire.id, this.currentStudentQuestion.student.id, 'false']);
               }
             )
           }

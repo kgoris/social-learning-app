@@ -30,5 +30,7 @@ export class ObserveComponent implements OnInit {
     this.websocketService.onActivityReceived(activity);
   }
 
-
+  isActivitiesPresent(){
+    return this.activitiesToObserve && this.activitiesToObserve.length > 0;
+  }
 }

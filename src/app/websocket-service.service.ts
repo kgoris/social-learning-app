@@ -6,6 +6,16 @@ import { Activity } from './modeles/activity';
 import { AuthService } from './service/auth.service';
 import { ConfigService } from './service/config.service';
 
+
+const ACTION_TYPE_DISPLAY: string = "DISPLAY";
+const ACTION_TYPE_LOGOUT: string= "LOGOUT";
+const ACTION_TYPE_TYPE: string = "TYPE";
+
+const RESSOURCE_TYPE_QUESTIONNAIRE: string = "QUESTIONNAIRE";
+const RESSOURCE_TYPE_HEADER: string = "HEADER";
+const RESSOURCE_TYPE_RESULTS: string= "RESULTS";
+const RESSOURCE_TYPE_WORK: string = "WORK";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +24,7 @@ export class WebsocketServiceService {
   constructor(private configService: ConfigService,
               private authService: AuthService,
               private router: Router) { }
-  stompClient = null;
+  stompClientComponent = null;
   disabled = true;
 
 
@@ -27,20 +37,25 @@ export class WebsocketServiceService {
 
   connect() {
     const socket = new SockJS('http://localhost:9080/gkz-stomp-endpoint');
-    this.stompClient = Stomp.over(socket);
+    let stompClient = Stomp.over(socket);
 
     const _this = this;
-    this.stompClient.connect({}, function (frame) {
+    stompClient.connect({}, function (frame) {
       _this.setConnected(true);
-      console.log('Connected: ' + frame);
-
- 
+      console.log('Connected: ' + frame); 
+      stompClient.subscribe('/topic/activity', message => {
+        _this.onMessageReceived(message);
+      });
     });
+    
   }
 
+  connectedCallBack(frame){
+    
+  }
   disconnect() {
-    if (this.stompClient != null) {
-      this.stompClient.disconnect();
+    if (this.stompClientComponent != null) {
+      this.stompClientComponent.disconnect();
     }
 
     this.setConnected(false);
@@ -54,15 +69,19 @@ export class WebsocketServiceService {
 
   onActivityReceived(activity: Activity){
     if(activity.student.id !== this.authService.getStudentInfo().id){
-      if(activity.ressourceType === "WORK" && activity.type === "DISPLAY"){
-        this.router.navigate(['/work', activity.student.id]);
+      if(activity.ressourceType === RESSOURCE_TYPE_WORK && activity.type === ACTION_TYPE_DISPLAY){
+        this.router.navigate(['/work', activity.student.id, 'true']);
+      }else if(activity.ressourceType == RESSOURCE_TYPE_QUESTIONNAIRE && activity.type == ACTION_TYPE_DISPLAY){
+        this.router.navigate(['questionnaire', activity.ressourceId, activity.student.id, 'true'])
+      }else if(activity.ressourceType === RESSOURCE_TYPE_RESULTS && activity.type === ACTION_TYPE_DISPLAY){
+        this.router.navigate(['results', activity.ressourceId, activity.student.id, 'true'])
+
       }
     }
   }
 
   sendInfo(info:any) {
-    this.stompClient.subscribe('/topic/activity', this.onMessageReceived);
-    this.stompClient.send(
+    this.stompClientComponent.send(
       '/gkz/activity',
       {},
       JSON.stringify(info)

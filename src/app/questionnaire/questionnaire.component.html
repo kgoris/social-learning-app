@@ -12,11 +12,11 @@
             <ion-radio-group  [formControl]="trueFalseFormControl" required=true value="trueFalse" [(ngModel)]="currentStudentQuestion.answer.value" >
               <ion-item>
                 <ion-label>True</ion-label>
-                <ion-radio [disabled]="currentStudentQuestion.locked" slot="end" value="true"></ion-radio>
+                <ion-radio [disabled]="currentStudentQuestion.locked || observeMode" slot="end" value="true"></ion-radio>
               </ion-item>
               <ion-item>
                 <ion-label>False</ion-label>
-                <ion-radio [disabled]="currentStudentQuestion.locked" slot="end" value="false"></ion-radio>
+                <ion-radio [disabled]="currentStudentQuestion.locked || observeMode" slot="end" value="false"></ion-radio>
               </ion-item>
             </ion-radio-group>
           </ion-list>
@@ -30,17 +30,17 @@
           <ion-input [formControl]="freeTextFormControl" [disabled]="currentStudentQuestion.locked" type="text" color="tertiary" class="box" clearInput  
           placeholder="Enter answer" required  [(ngModel)]="currentStudentQuestion.answer.value" ></ion-input>
           <div class="error-message" *ngIf="!checkIfFormValid()">
-            Text should not be empty of longer than 50 caracters
+            Text should not be empty or longer than 50 caracters
           </div>
         </div>
 
 
         <div *ngIf="multipleChoiceQuestion()">
           <ion-list radio-group  >
-            <ion-radio-group [formControl]="multipleChoiceFormControl" required=true value="trueFalse" [(ngModel)]="currentStudentQuestion.answer.propositionId" >
+            <ion-radio-group [formControl]="multipleChoiceFormControl" required=true value="trueFalse" [(ngModel)]="currentStudentQuestion.answer.propositionId" (ngModelChange)="multiChanged($event)">
               <ion-item *ngFor="let proposition of currentStudentQuestion.question.propositions">
                 <ion-label  class="ion-text-wrap">{{proposition.value}}</ion-label>
-                <ion-radio  [disabled]="currentStudentQuestion.locked" slot="end" value="{{proposition.id}}"></ion-radio>
+                <ion-radio  [disabled]="currentStudentQuestion.locked || observeMode" slot="end" value="{{proposition.id}}"></ion-radio>
               </ion-item>
             </ion-radio-group>
           </ion-list>
@@ -52,13 +52,13 @@
 
         <ion-row>
           <ion-col>
-            <ion-button *ngIf="currentStudentQuestion.question.sequenceNumber>1" color="tertiary" size="medium" expand="block" (click)="previous()" >Previous</ion-button>
+            <ion-button [disabled]="observeMode" *ngIf="currentStudentQuestion.question.sequenceNumber>1" color="tertiary" size="medium" expand="block" (click)="previous()" >Previous</ion-button>
           </ion-col>
           <ion-col *ngIf="currentStudentQuestion.question.sequenceNumber < currentStudentQuestion.questionnaire.questionCount">
-            <ion-button  color="tertiary" size="medium" expand="block" (click)="next()" >Next</ion-button>
+            <ion-button [disabled]="observeMode" color="tertiary" size="medium" expand="block" (click)="next()" >Next</ion-button>
           </ion-col>    
           <ion-col *ngIf="currentStudentQuestion.question.sequenceNumber === currentStudentQuestion.questionnaire.questionCount">
-            <ion-button  color="danger" size="medium" expand="block" (click)="lock()" >Finish</ion-button>
+            <ion-button [disabled]="observeMode" color="danger" size="medium" expand="block" (click)="lock()" >Finish</ion-button>
           </ion-col>      
         </ion-row>
        

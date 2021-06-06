@@ -70,7 +70,7 @@ export class WelcomeComponent  implements OnInit{
   }
 
   getQuestionnairesWork(){
-    this.welcomeService.getQuestionnairesWork().subscribe(
+    this.welcomeService.getQuestionnairesWork(this.authService.getStudentInfo()).subscribe(
       questionnaireReceived => this.questionnairesWork = questionnaireReceived
     );
   }
@@ -82,6 +82,6 @@ export class WelcomeComponent  implements OnInit{
   }
 
   goToWork(){
-    this.router.navigate(['/work/' + this.authService.getStudentInfo().id]);
+    this.router.navigate(['/work/' + this.authService.getStudentInfo().id + '/' + 'false']);
   }
 }
