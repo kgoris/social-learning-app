@@ -10,6 +10,7 @@ import { ConfigService } from "./config.service";
 
 const ACTION_TYPE_DISPLAY: string = "DISPLAY";
 const ACTION_TYPE_LOGOUT: string= "LOGOUT";
+const ACTION_TYPE_HOME: string= "HOME";
 const ACTION_TYPE_TYPE: string = "TYPE";
 
 const RESSOURCE_TYPE_QUESTIONNAIRE: string = "QUESTIONNAIRE";
@@ -76,6 +77,24 @@ export class ActivityService {
         activity.value = text;
         this.postActivity(activity).subscribe();
     }
+
+    public notifiyLogout(workingStudent:Student){
+        let activity = new Activity();
+        activity.student = workingStudent;
+        activity.ressourceType = RESSOURCE_TYPE_HEADER;
+        activity.type = ACTION_TYPE_LOGOUT
+        this.postActivity(activity).subscribe();
+
+    }
+
+    public notifyHome(workingStudent: Student){
+        let activity = new Activity();
+        activity.student = workingStudent;
+        activity.ressourceType = RESSOURCE_TYPE_HEADER;
+        activity.type = ACTION_TYPE_HOME;
+        this.postActivity(activity).subscribe();
+    }
+
     public getActivitiesToObserve(): Observable<Activity[]>{
         return this.httpClient.get<Activity[]>(this.configService.activity_student_to_observe, {headers: this.header});
     }

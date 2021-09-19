@@ -35,6 +35,11 @@
 		<ion-buttons slot="start">
 			<ion-menu-button (click)="openMenu()"></ion-menu-button>
 		</ion-buttons>
-		<ion-title>Social Mobile Learning</ion-title>
+		<ion-title size="small">Social Mobile Learning</ion-title>
+		<div *ngIf="observedStudent">
+			<ion-title slot="end" color="primary" size="small">Observed student: {{observedStudent.firstName}} {{observedStudent.name}}
+			</ion-title>
+		</div>
+		
 	</ion-toolbar>
 </ion-header>

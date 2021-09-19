@@ -18,4 +18,10 @@ export class StudentService {
     public findById(id:string):Observable<Student>{
         return this.httpClient.get<Student>(this.configService.student_url + "/" + id,  {headers: this.header});
     }
+
+    public updateStudent(student:Student): Observable<any>{
+        return this.httpClient.post<any>(this.configService.student_url, student, {headers: this.header});
+    }
+
+    
 }

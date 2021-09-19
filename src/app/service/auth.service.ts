@@ -118,7 +118,7 @@ export class AuthService {
         localStorage.setItem(this.JWT_TOKEN, jwt);
       }
     
-      private storeStudentInfo(student: Student){
+      storeStudentInfo(student: Student){
           localStorage.setItem(this.STUDENT_INFO, JSON.stringify(student));
       }
       getStudentInfo(): Student{

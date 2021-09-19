@@ -9,5 +9,6 @@ export class Student {
     name : string;
     username: string;
     password: string;
+    studentObserved: Student;
 
 }

@@ -41,12 +41,6 @@ export class WelcomeComponent  implements OnInit{
 
   }
 
-
-
-  logout() {
-    this.authService.logout();
-  }
-
   getUserFirstName(){
     let student: Student = this.authService.getStudentInfo();
     if(!!student){

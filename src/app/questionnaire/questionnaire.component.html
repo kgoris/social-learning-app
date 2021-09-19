@@ -9,7 +9,7 @@
       <form role="form" (submit)="submit()">
         <div *ngIf="trueFalseQuestion()">
           <ion-list radio-group  >
-            <ion-radio-group  [formControl]="trueFalseFormControl" required=true value="trueFalse" [(ngModel)]="currentStudentQuestion.answer.value" >
+            <ion-radio-group  [formControl]="trueFalseFormControl" required=true value="trueFalse" [(ngModel)]="currentStudentQuestion.answer.value" (ngModelChange)="textChanged($event)">
               <ion-item>
                 <ion-label>True</ion-label>
                 <ion-radio [disabled]="currentStudentQuestion.locked || observeMode" slot="end" value="true"></ion-radio>
@@ -27,8 +27,8 @@
 
         
         <div  *ngIf="freeTextQuestion()">
-          <ion-input [formControl]="freeTextFormControl" [disabled]="currentStudentQuestion.locked" type="text" color="tertiary" class="box" clearInput  
-          placeholder="Enter answer" required  [(ngModel)]="currentStudentQuestion.answer.value" ></ion-input>
+          <ion-input [formControl]="freeTextFormControl" [disabled]="currentStudentQuestion.locked || observeMode" type="text" color="tertiary" class="box" clearInput  
+          placeholder="Enter answer" required  [(ngModel)]="currentStudentQuestion.answer.value" (ngModelChange)="textChanged($event)"></ion-input>
           <div class="error-message" *ngIf="!checkIfFormValid()">
             Text should not be empty or longer than 50 caracters
           </div>

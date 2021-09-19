@@ -43,3 +43,6 @@
 .good-value {
     color: green;
 }
+ion-button.button-disabled {
+    --opacity: 1;
+ }

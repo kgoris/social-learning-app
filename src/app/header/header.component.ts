@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Student } from '../modeles/student';
+import { ActivityService } from '../service/activity.service';
 import { AuthService } from '../service/auth.service';
+import { UserService } from '../service/user.service';
 
 @Component({
   selector: 'app-header',
@@ -12,10 +14,16 @@ export class HeaderComponent implements OnInit {
 
   @Input("menuIdCustom") menuIdCustom;
 
-  constructor(private authService: AuthService,
-    private menu : MenuController) { }
+  observedStudent: Student;
 
-  ngOnInit() {}
+  constructor(private authService: AuthService,
+    private menu : MenuController,
+    private userService: UserService,
+    private activityService: ActivityService) { }
+
+  ngOnInit() {
+    this.userService.currentObservedStudent.subscribe(student => this.observedStudent = student);    
+  }
 
   getUserFirstName(){
     let student: Student = this.authService.getStudentInfo();
@@ -29,7 +37,7 @@ export class HeaderComponent implements OnInit {
   }
 
   home(){
-    alert("hello");
+    return this.activityService.notifyHome(this.authService.getStudentInfo());
   }
 
   getUserName(){
@@ -51,6 +59,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
+    this.activityService.notifiyLogout(this.authService.getStudentInfo())
     this.authService.logout();
   }
 }

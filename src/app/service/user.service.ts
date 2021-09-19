@@ -15,11 +15,21 @@ export class UserService {
   private _isUser = new BehaviorSubject<boolean>(false);
   isUser = this._isUser.asObservable();
 
+  studentObserved: Student;
+  private observedStudent = new BehaviorSubject<Student>(null); 
+
   constructor(
     private apiService: ApiService,
     private config: ConfigService,
     private httpClient: HttpClient,
   ) { }
+
+  currentObservedStudent = this.observedStudent.asObservable();
+  
+  changeObservedStudent(student:Student){
+    this.observedStudent.next(student);
+    this.studentObserved = student;
+  }
 
   initUser() {
     const promise = this.apiService.get(this.config.refresh_token_url).toPromise()

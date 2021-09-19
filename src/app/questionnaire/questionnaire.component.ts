@@ -13,6 +13,7 @@ import { Student } from '../modeles/student';
 import { ActivityService } from '../service/activity.service';
 import { AuthService } from '../service/auth.service';
 import { Proposition } from '../modeles/proposition';
+import { Activity } from '../modeles/activity';
 
 @Component({
   selector: 'app-questionnaire',
@@ -39,10 +40,21 @@ export class QuestionnaireComponent implements OnInit {
               private studentQuestionService: StudentQuestionService,
               private welcomeService: WelcomeService,
               private activityService: ActivityService,
-              private authService: AuthService
+              private authService: AuthService,
+              private websocketService: WebsocketServiceService
               ) { }
 
   ngOnInit() {
+    this.websocketService.subscriberQuestionOberver.subscribe(
+      activity => {
+        let activityEmit : Activity = activity;
+        if(activityEmit.proposition){
+          this.currentStudentQuestion.answer.propositionId = activityEmit.proposition.id.toString();
+        }else{
+          this.currentStudentQuestion.answer.value = activityEmit.value;
+        }
+      }
+    )
     this.initFormGroup();
     this.route.paramMap.pipe(
       mergeMap(params => {
@@ -160,6 +172,12 @@ export class QuestionnaireComponent implements OnInit {
       this.activityService.notifiyTypeAnswer(this.currentStudentQuestion, proposition, null);
     }
     
+  }
+
+  textChanged(value){
+    if(value && !this.observeMode){
+      this.activityService.notifiyTypeAnswer(this.currentStudentQuestion, null, value);
+    }
   }
 
   cleanFormControls(){
