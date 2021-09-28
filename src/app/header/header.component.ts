@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
 import { Student } from '../modeles/student';
 import { ActivityService } from '../service/activity.service';
 import { AuthService } from '../service/auth.service';
@@ -15,22 +17,26 @@ export class HeaderComponent implements OnInit {
   @Input("menuIdCustom") menuIdCustom;
 
   observedStudent: Student;
-
+  public userProfile: KeycloakProfile | null = null;
+  
   constructor(private authService: AuthService,
     private menu : MenuController,
     private userService: UserService,
-    private activityService: ActivityService) { }
+    private activityService: ActivityService,
+    private keycloakService: KeycloakService) { }
 
-  ngOnInit() {
-    this.userService.currentObservedStudent.subscribe(student => this.observedStudent = student);    
+  async ngOnInit() {
+    this.userService.currentObservedStudent.subscribe(student => this.observedStudent = student); 
+    this.userProfile = await this.keycloakService.loadUserProfile(); 
+    
   }
 
   getUserFirstName(){
-    let student: Student = this.authService.getStudentInfo();
-    if(!!student){
-      return student.firstName
-    }
-    return null;
+    return this.userProfile.firstName;
+  }
+
+  getUserName(){
+    return this.userProfile.lastName;
   }
   getMenuId(){
     return this.menuIdCustom;
@@ -40,13 +46,6 @@ export class HeaderComponent implements OnInit {
     return this.activityService.notifyHome(this.authService.getStudentInfo());
   }
 
-  getUserName(){
-    let student: Student = this.authService.getStudentInfo();
-    if(!!student){
-      return student.name
-    }
-    return null;
-  }
   authenticated(){
     return this.authService.isLoggedIn();
   }
@@ -60,6 +59,6 @@ export class HeaderComponent implements OnInit {
 
   logout() {
     this.activityService.notifiyLogout(this.authService.getStudentInfo())
-    this.authService.logout();
+    this.keycloakService.logout();
   }
 }

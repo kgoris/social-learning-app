@@ -49,6 +49,7 @@ export class WorkComponent implements OnInit {
       })
     ).subscribe(student => {
       this.workingStudent = student;
+      //TODO refactor
       if(!this.activitySent && this.workingStudent.id === this.authService.getStudentInfo().id){
         this.activityService.notifyDisplayWorkActivity(this.workingStudent);
         this.activitySent = true;

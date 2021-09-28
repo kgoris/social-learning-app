@@ -27,7 +27,7 @@
     </ion-list>
     <ion-row>
       <ion-col>
-        <ion-button [disabled] = "observeMode" color="tertiary" size="medium" expand="block" [routerLink]="['/work', connectedStudentId, 'false']">Go back to exercices</ion-button>
+        <ion-button [disabled] = "observeMode" color="tertiary" size="medium" expand="block" [routerLink]="['/work', connectedStudentUsername, 'false']">Go back to exercices</ion-button>
       </ion-col>    
       <ion-col>
         <ion-button [disabled] = "observeMode" color="danger" size="medium" expand="block" (click)="reset()" >Restart the questionnaire</ion-button>

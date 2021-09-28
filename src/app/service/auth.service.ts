@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
+import { KeycloakService } from "keycloak-angular";
 import { tap } from "rxjs/internal/operators/tap";
 import { Student } from "../modeles/student";
 import { Token } from "../modeles/token";
@@ -25,7 +26,8 @@ export class AuthService {
     constructor(private http: HttpClient, 
                 private config: ConfigService,
                 private userService: UserService, 
-                private router: Router) {
+                private router: Router,
+                private keycloakService: KeycloakService) {
     }
 
     authenticate(credentials, callback) {
@@ -124,6 +126,7 @@ export class AuthService {
       getStudentInfo(): Student{
           let studentString = localStorage.getItem(this.STUDENT_INFO);
           let student: Student = JSON.parse(studentString);
+          this.keycloakService.getUsername()
           return student;
       }
 

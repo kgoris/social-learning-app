@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -28,6 +28,9 @@ import { ActivityService } from './service/activity.service';
 import { StudentService } from './service/student.service';
 import { AuthGuardService } from './guard/auth-guard.service';
 import { ObserveComponent } from './observe/observe.component';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { initializer } from './app-init';
+import { AuthGuard } from './guard/auth-guard';
 
 @NgModule({
   declarations: [
@@ -47,7 +50,8 @@ import { ObserveComponent } from './observe/observe.component';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    KeycloakAngularModule
   ],
   providers: [
     StatusBar,
@@ -65,11 +69,18 @@ import { ObserveComponent } from './observe/observe.component';
     MenuController,
     StudentService,
     AuthGuardService,
-    {
+  /**    AuthGuard,
+   {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
-    }
+    },*/
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializer,
+      deps: [KeycloakService],
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent]
 })

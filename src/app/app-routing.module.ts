@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthGuardService } from './guard/auth-guard.service';
+import { AuthGuard } from './guard/auth-guard';
 import { LoginComponent } from './login/login.component';
 import { ObserveComponent } from './observe/observe.component';
 import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
@@ -13,41 +13,41 @@ const routes: Routes = [
     path: '', 
     pathMatch: 'full', 
     redirectTo: 'home',
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuard]
   },
   { 
     path: 'home', 
     component: WelcomeComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuard]
   },
   { 
     path: 'login', 
     component: LoginComponent,  
   },
   { 
-    path: 'work/:studentId/:readonly', 
+    path: 'work/:studentUsername/:readonly', 
     component: WorkComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuard]
   },
   { 
-    path: 'questionnaire/new/:qid/:studentId/:readonly', 
+    path: 'questionnaire/new/:qid/:studentUsername/:readonly', 
     component: QuestionnaireComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuard]
   },
   { 
-    path: 'questionnaire/:currentSudentQuestionId/:studentId/:readonly', 
+    path: 'questionnaire/:currentSudentQuestionId/:studentUsername/:readonly', 
     component: QuestionnaireComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuard]
   },
   { 
-    path: 'results/:id/:studentId/:readonly', 
+    path: 'results/:id/:studentUsername/:readonly', 
     component: ResultsComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuard]
   },
   {
     path: 'observe',
     component: ObserveComponent,
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuard]
   }
 ];
 @NgModule({

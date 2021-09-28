@@ -6,7 +6,7 @@ export class Activity{
     ressourceType: string;
     type: string;
     ressourceId: number;
-    student: Student;
+    studentUsername: string;
     proposition: Proposition;
     value: string;
 }

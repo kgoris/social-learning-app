@@ -1,9 +1,6 @@
 	<app-header menuIdCustom="welcomeHeader"></app-header>
+	
 	<ion-content>
-		<div *ngIf = "!authenticated(); else showAuthenticated">
-			<app-login></app-login>
-		</div>
-		<ng-template  #showAuthenticated>
 			<div *ngIf="!observeSelected && !workSelected">
 				<div *ngIf = "!start">
 					<ion-button  (click)="startApp()">
@@ -30,7 +27,6 @@
 			<div *ngIf = "!backHome && workSelected">
 
 			</div>
-		</ng-template>
 	
 	</ion-content>
 

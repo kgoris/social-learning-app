@@ -15,6 +15,7 @@ export class ConfigService {
 
 
   public student_url = this._api_url + '/students';
+  public student_by_login_url = this.student_url + '/findbylogin';
   public questionnaires_url = this._api_url + '/questionnaires';
   public student_question_url = this._api_url + '/student-questions';
   public activity_url = this._api_url + '/activities'

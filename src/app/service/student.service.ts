@@ -23,5 +23,8 @@ export class StudentService {
         return this.httpClient.post<any>(this.configService.student_url, student, {headers: this.header});
     }
 
+    public findByLogin(login:string): Observable<Student>{
+        return this.httpClient.get<Student>(this.configService.student_by_login_url,  {headers: this.header})
+    }
     
 }

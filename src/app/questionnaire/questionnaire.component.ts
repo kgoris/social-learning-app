@@ -14,6 +14,8 @@ import { ActivityService } from '../service/activity.service';
 import { AuthService } from '../service/auth.service';
 import { Proposition } from '../modeles/proposition';
 import { Activity } from '../modeles/activity';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
 
 @Component({
   selector: 'app-questionnaire',
@@ -30,7 +32,7 @@ export class QuestionnaireComponent implements OnInit {
   workingStudent: Student;  
   activitySent: boolean = false;
   observeMode : boolean = false;
-  connectedStudentId: number;
+  connectedStudentUsername: string;
   
   currentStudentQuestion : StudentQuestion;
   loadingStudentQuestion : Observable<StudentQuestion>;
@@ -40,7 +42,7 @@ export class QuestionnaireComponent implements OnInit {
               private studentQuestionService: StudentQuestionService,
               private welcomeService: WelcomeService,
               private activityService: ActivityService,
-              private authService: AuthService,
+              private keycloakService: KeycloakService,
               private websocketService: WebsocketServiceService
               ) { }
 
@@ -60,7 +62,7 @@ export class QuestionnaireComponent implements OnInit {
       mergeMap(params => {
           let questionnaireId = params.get('qid');
           let currentStudentQuestionId = params.get('currentSudentQuestionId');
-          this.connectedStudentId = +params.get('studentId');
+          this.connectedStudentUsername = params.get('studentUsername');
           this.observeMode = params.get('readonly') == "true";
 
           if(currentStudentQuestionId){
@@ -73,11 +75,11 @@ export class QuestionnaireComponent implements OnInit {
           ;
         }
       )
-    ).subscribe(value => {
+    ).subscribe(async value => {
       this.currentStudentQuestion = value;
-    
-      if(this.connectedStudentId === this.authService.getStudentInfo().id){
-        this.activityService.notifyDisplayQuestionnaire(this.currentStudentQuestion.student, this.currentStudentQuestion.id);
+      let userProfile: KeycloakProfile = await this.keycloakService.loadUserProfile();
+      if(this.connectedStudentUsername === userProfile.username){
+        this.activityService.notifyDisplayQuestionnaire(this.currentStudentQuestion.student.username, this.currentStudentQuestion.id);
         this.activitySent = true;
       }
       
@@ -194,7 +196,7 @@ export class QuestionnaireComponent implements OnInit {
       this.studentQuestionService.nextStudentQuestion(this.currentStudentQuestion).subscribe(
         studentQuestion => {
           this.currentStudentQuestion = studentQuestion
-          this.router.navigate(['/questionnaire', this.currentStudentQuestion.id, this.currentStudentQuestion.student.id, 'false']);
+          this.router.navigate(['/questionnaire', this.currentStudentQuestion.id, this.currentStudentQuestion.student.username, 'false']);
         } 
       )
     }
@@ -206,7 +208,7 @@ export class QuestionnaireComponent implements OnInit {
       this.studentQuestionService.previousStudentQuestion(this.currentStudentQuestion).subscribe(
         studentQuestion => {
           this.currentStudentQuestion = studentQuestion
-          this.router.navigate(['/questionnaire', this.currentStudentQuestion.id, this.currentStudentQuestion.student.id, 'false']);
+          this.router.navigate(['/questionnaire', this.currentStudentQuestion.id, this.currentStudentQuestion.student.username, 'false']);
         } 
       )
     }    
@@ -218,7 +220,7 @@ export class QuestionnaireComponent implements OnInit {
       this.studentQuestionService.save(this.currentStudentQuestion).subscribe(value =>{
             this.studentQuestionService.lockStudentQuestions(this.currentStudentQuestion.questionnaire.id).subscribe(
               value => {
-                this.router.navigate(['/results', this.currentStudentQuestion.questionnaire.id, this.currentStudentQuestion.student.id, 'false']);
+                this.router.navigate(['/results', this.currentStudentQuestion.questionnaire.id, this.currentStudentQuestion.student.username, 'false']);
               }
             )
           }

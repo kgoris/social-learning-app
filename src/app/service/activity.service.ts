@@ -1,5 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { KeycloakService } from "keycloak-angular";
+import { KeycloakProfile } from "keycloak-js";
 import { Observable } from "rxjs";
 import { Activity } from "../modeles/activity";
 import { Proposition } from "../modeles/proposition";
@@ -22,7 +24,7 @@ const RESSOURCE_TYPE_WORK: string = "WORK";
 export class ActivityService {
     constructor(private configService: ConfigService, 
                 private httpClient: HttpClient,
-                private authService: AuthService){}
+                private keycloakService: KeycloakService){}
 
    
     
@@ -35,20 +37,22 @@ export class ActivityService {
         return this.httpClient.post<any>(this.configService.activity_url, activity, {headers: this.header});
     }
     
-    public notifyDisplayWorkActivity(workingStudent: Student){
-        if(this.authService.getStudentInfo().id === workingStudent.id){
+    public async notifyDisplayWorkActivity(workingStudentUsername: string){
+        let userProfile: KeycloakProfile = await this.keycloakService.loadUserProfile(); 
+        if(userProfile.username === workingStudentUsername){
             let activity = new Activity();
-            activity.student = workingStudent;
+            activity.studentUsername = workingStudentUsername;
             activity.type = ACTION_TYPE_DISPLAY;
             activity.ressourceType = RESSOURCE_TYPE_WORK;
             this.postActivity(activity).subscribe();
         }
     }
 
-    public notifyDisplayQuestionnaire(workingStudent: Student, questionnaireId: number){
-        if(this.authService.getStudentInfo().id === workingStudent.id){
+    public async notifyDisplayQuestionnaire(workingStudentUsername: string, questionnaireId: number){
+        let userProfile: KeycloakProfile = await this.keycloakService.loadUserProfile(); 
+        if(userProfile.username === workingStudentUsername){
             let activity = new Activity();
-            activity.student = workingStudent;
+            activity.studentUsername = workingStudentUsername;
             activity.type = ACTION_TYPE_DISPLAY;
             activity.ressourceType = RESSOURCE_TYPE_QUESTIONNAIRE;
             activity.ressourceId = questionnaireId;
@@ -56,10 +60,11 @@ export class ActivityService {
         }
     }
 
-    public notifyDisplayResume(workingStudent: Student, questionnaireId: number){
-        if(this.authService.getStudentInfo().id === workingStudent.id){
+    public async notifyDisplayResume(workingStudentUsername: string, questionnaireId: number){
+        let userProfile: KeycloakProfile = await this.keycloakService.loadUserProfile(); 
+        if(userProfile.username === workingStudentUsername){
             let activity = new Activity();
-            activity.student = workingStudent;
+            activity.studentUsername = workingStudentUsername;
             activity.type = ACTION_TYPE_DISPLAY;
             activity.ressourceType = RESSOURCE_TYPE_RESULTS;
             activity.ressourceId = questionnaireId;
@@ -69,7 +74,7 @@ export class ActivityService {
 
     public notifiyTypeAnswer(studentQuestion: StudentQuestion, proposition:Proposition, text: string){
         let activity = new Activity();
-        activity.student = studentQuestion.student;
+        activity.studentUsername = studentQuestion.student.username;
         activity.type = ACTION_TYPE_TYPE;
         activity.ressourceType = RESSOURCE_TYPE_QUESTIONNAIRE;
         activity.ressourceId = studentQuestion.id;
@@ -78,18 +83,18 @@ export class ActivityService {
         this.postActivity(activity).subscribe();
     }
 
-    public notifiyLogout(workingStudent:Student){
+    public notifiyLogout(workingStudentUsername:string){
         let activity = new Activity();
-        activity.student = workingStudent;
+        activity.studentUsername = workingStudentUsername;
         activity.ressourceType = RESSOURCE_TYPE_HEADER;
         activity.type = ACTION_TYPE_LOGOUT
         this.postActivity(activity).subscribe();
 
     }
 
-    public notifyHome(workingStudent: Student){
+    public notifyHome(workingStudentUsername:string){
         let activity = new Activity();
-        activity.student = workingStudent;
+        activity.studentUsername = workingStudentUsername;
         activity.ressourceType = RESSOURCE_TYPE_HEADER;
         activity.type = ACTION_TYPE_HOME;
         this.postActivity(activity).subscribe();

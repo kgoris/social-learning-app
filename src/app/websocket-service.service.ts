@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import {Stomp} from '@stomp/stompjs';
+import { KeycloakService } from 'keycloak-angular';
 import { Subject } from 'rxjs';
 import * as SockJS from 'sockjs-client';
 import { Activity } from './modeles/activity';
 import { Student } from './modeles/student';
 import { AuthService } from './service/auth.service';
 import { ConfigService } from './service/config.service';
+import { StudentService } from './service/student.service';
 import { UserService } from './service/user.service';
 
 
@@ -26,9 +28,9 @@ const RESSOURCE_TYPE_WORK: string = "WORK";
 export class WebsocketServiceService {
 
   constructor(private configService: ConfigService,
-              private authService: AuthService,
+              private keycloakService: KeycloakService,
               private router: Router,
-              private userService: UserService) { }
+              private studentService: StudentService) { }
   stompClientComponent = null;
   disabled = true;
   activityQuestionObserver = new Subject<Activity>();
@@ -73,30 +75,32 @@ export class WebsocketServiceService {
     console.log('Disconnected!');
   }
 
-  onMessageReceived(message){
+  async onMessageReceived(message){
     let activity: Activity = JSON.parse(message.body);
-    let currentStudent: Student = this.authService.getStudentInfo();
+    let userProfile = await this.keycloakService.loadUserProfile();
+    this.studentService.findByLogin(userProfile.username).subscribe(
+      student => {
+        if(student && activity.studentUsername && student.studentObserved && student.studentObserved.username === activity.studentUsername){
+          this.onActivityReceived(activity);
+        }
+      }
+    )
     
-    if(currentStudent && activity.student && currentStudent.studentObserved && currentStudent.studentObserved.id === activity.student.id){
-      this.onActivityReceived(activity);
-    }
     
   }
 
   onActivityReceived(activity: Activity){
-    if(activity.student.id !== this.authService.getStudentInfo().id){
       if(activity.ressourceType === RESSOURCE_TYPE_WORK && activity.type === ACTION_TYPE_DISPLAY){
-        this.router.navigate(['/work', activity.student.id, 'true']);
+        this.router.navigate(['/work', activity.studentUsername, 'true']);
       }else if(activity.ressourceType == RESSOURCE_TYPE_QUESTIONNAIRE && activity.type == ACTION_TYPE_DISPLAY){
-        this.router.navigate(['questionnaire', activity.ressourceId, activity.student.id, 'true'])
+        this.router.navigate(['questionnaire', activity.ressourceId, activity.studentUsername, 'true'])
       }else if(activity.ressourceType === RESSOURCE_TYPE_RESULTS && activity.type === ACTION_TYPE_DISPLAY){
-        this.router.navigate(['results', activity.ressourceId, activity.student.id, 'true'])
+        this.router.navigate(['results', activity.ressourceId, activity.studentUsername, 'true'])
       }else if(activity.ressourceType == RESSOURCE_TYPE_QUESTIONNAIRE && activity.type === ACTION_TYPE_TYPE){
         this.emitDataQuestionObserver(activity);
       }else if(activity.ressourceType === RESSOURCE_TYPE_HEADER &&  (activity.type === ACTION_TYPE_LOGOUT || activity.type === ACTION_TYPE_HOME)){
         this.router.navigate(['home']);
       }
-    }
   }
 
   sendInfo(info:any) {

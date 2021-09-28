@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuController } from '@ionic/angular';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { Questionnaire } from '../modeles/questionnaire';
 import { Student } from '../modeles/student';
@@ -24,37 +26,32 @@ export class WelcomeComponent  implements OnInit{
   start: boolean = false;
   observeSelected : boolean = false;
   workSelected: boolean =false ; 
+  public userProfile: KeycloakProfile | null = null;
   
   constructor(
     private welcomeService:WelcomeService,
     private userService: UserService,
     private http: HttpClient,
     private router: Router,
-    private authService: AuthService) {
+    private keycloakService: KeycloakService) {
   }
 
+  //TODO refactor
   authenticated(){
-    return this.authService.isLoggedIn();
+    //return this.authService.isLoggedIn();
+    return true;
   }
 
-  ngOnInit(): void {
-
+  async ngOnInit(): Promise<void> {
+    this.userProfile = await this.keycloakService.loadUserProfile();
   }
 
   getUserFirstName(){
-    let student: Student = this.authService.getStudentInfo();
-    if(!!student){
-      return student.firstName
-    }
-    return null;
+    return this.userProfile.firstName;
   }
 
   getUserName(){
-    let student: Student = this.authService.getStudentInfo();
-    if(!!student){
-      return student.name
-    }
-    return null;
+    return this.userProfile.lastName;
   }
 
   startApp(){
@@ -64,7 +61,7 @@ export class WelcomeComponent  implements OnInit{
   }
 
   getQuestionnairesWork(){
-    this.welcomeService.getQuestionnairesWork(this.authService.getStudentInfo()).subscribe(
+    this.welcomeService.getQuestionnairesWork(null).subscribe(
       questionnaireReceived => this.questionnairesWork = questionnaireReceived
     );
   }
@@ -76,6 +73,6 @@ export class WelcomeComponent  implements OnInit{
   }
 
   goToWork(){
-    this.router.navigate(['/work/' + this.authService.getStudentInfo().id + '/' + 'false']);
+    this.router.navigate(['/work/' + this.userProfile.username + '/' + 'false']);
   }
 }

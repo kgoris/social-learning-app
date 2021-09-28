@@ -4,7 +4,14 @@
 
 export const environment = {
   production: false,
-  backUrl : "/api"
+  backUrl : "/api",
+  keycloak: {
+    // Url of the Identity Provider
+    issuer: 'http://localhost:8080/auth/',
+    // Realm
+    realm: 'social-learning',
+    clientId: 'social-learning-app',
+  },
 };
 
 /*
