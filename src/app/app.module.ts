@@ -12,12 +12,9 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { WelcomeService } from './welcome/welcome.service';
 import { ConfigService } from './service/config.service';
 import { HttpClient, HttpClientModule, HttpHandler, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { LoginComponent } from './login/login.component';
-import { AuthService } from './service/auth.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from './service/api.service';
 import { UserService } from './service/user.service';
-import { TokenInterceptor } from './service/token-interceptor';
 import { HeaderComponent } from './header/header.component';
 import { WorkComponent } from './work/work.component';
 import { StudentQuestionService } from './service/student-question-service';
@@ -26,7 +23,6 @@ import { ResultsComponent } from './results/results.component';
 import { WebsocketServiceService } from './websocket-service.service';
 import { ActivityService } from './service/activity.service';
 import { StudentService } from './service/student.service';
-import { AuthGuardService } from './guard/auth-guard.service';
 import { ObserveComponent } from './observe/observe.component';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { initializer } from './app-init';
@@ -36,7 +32,6 @@ import { AuthGuard } from './guard/auth-guard';
   declarations: [
     AppComponent,
     WelcomeComponent,
-    LoginComponent,
     WorkComponent,
     HeaderComponent,
     QuestionnaireComponent,
@@ -59,7 +54,6 @@ import { AuthGuard } from './guard/auth-guard';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     WelcomeService,
     ConfigService,
-    AuthService,
     HttpClient,
     ApiService,
     UserService,
@@ -68,9 +62,8 @@ import { AuthGuard } from './guard/auth-guard';
     ActivityService,
     MenuController,
     StudentService,
-    AuthGuardService,
-  /**    AuthGuard,
-   {
+    AuthGuard,
+   /**{
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true

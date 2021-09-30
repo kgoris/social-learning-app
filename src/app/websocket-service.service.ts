@@ -6,7 +6,6 @@ import { Subject } from 'rxjs';
 import * as SockJS from 'sockjs-client';
 import { Activity } from './modeles/activity';
 import { Student } from './modeles/student';
-import { AuthService } from './service/auth.service';
 import { ConfigService } from './service/config.service';
 import { StudentService } from './service/student.service';
 import { UserService } from './service/user.service';

@@ -6,7 +6,6 @@ import { mergeMap } from 'rxjs/internal/operators/mergeMap';
 import { Results } from '../modeles/results';
 import { Student } from '../modeles/student';
 import { ActivityService } from '../service/activity.service';
-import { AuthService } from '../service/auth.service';
 import { StudentQuestionService } from '../service/student-question-service';
 import { StudentService } from '../service/student.service';
 
@@ -56,14 +55,23 @@ export class ResultsComponent implements OnInit {
   }
 
   reset(){
-    this.studentQuestionService.resetStudentQuestions(this.results.questionnaire.id).subscribe(
+    //this.studentQuestionService.resetStudentQuestions(this.results.questionnaire.id).subscribe(
+    //  studentQuestion => {
+    //    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+    //      return false;
+    //    };
+    //    this.router.navigate(['/questionnaire', studentQuestion.id, studentQuestion.student.username, "false"]);
+    //  } 
+    //)
+
+    this.studentQuestionService.resetStudentQuestions(this.results.questionnaire.id).then(premise => premise.subscribe(
       studentQuestion => {
         this.router.routeReuseStrategy.shouldReuseRoute = function () {
           return false;
         };
         this.router.navigate(['/questionnaire', studentQuestion.id, studentQuestion.student.username, "false"]);
       } 
-    )
+    ))
   }
 
 

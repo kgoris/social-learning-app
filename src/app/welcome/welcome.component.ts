@@ -7,7 +7,7 @@ import { KeycloakProfile } from 'keycloak-js';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { Questionnaire } from '../modeles/questionnaire';
 import { Student } from '../modeles/student';
-import { AuthService } from '../service/auth.service';
+import { StudentService } from '../service/student.service';
 import { UserService } from '../service/user.service';
 import { WelcomeService } from './welcome.service';
 
@@ -15,7 +15,7 @@ import { WelcomeService } from './welcome.service';
   selector: 'app-welcome',
   templateUrl: './welcome.component.html',
   styleUrls: ['welcome.component.css'],
-  providers : [WelcomeService]
+  //providers : [WelcomeService]
 })
 export class WelcomeComponent  implements OnInit{
 
@@ -30,16 +30,9 @@ export class WelcomeComponent  implements OnInit{
   
   constructor(
     private welcomeService:WelcomeService,
-    private userService: UserService,
-    private http: HttpClient,
+    private studentService: StudentService,
     private router: Router,
     private keycloakService: KeycloakService) {
-  }
-
-  //TODO refactor
-  authenticated(){
-    //return this.authService.isLoggedIn();
-    return true;
   }
 
   async ngOnInit(): Promise<void> {
@@ -61,15 +54,20 @@ export class WelcomeComponent  implements OnInit{
   }
 
   getQuestionnairesWork(){
-    this.welcomeService.getQuestionnairesWork(null).subscribe(
-      questionnaireReceived => this.questionnairesWork = questionnaireReceived
-    );
+    this.studentService.findByLogin(this.userProfile.username).subscribe(
+      student => {
+        this.welcomeService.getQuestionnairesWork(student).subscribe(
+          questionnaireReceived => this.questionnairesWork = questionnaireReceived
+        );
+      }
+    )
+    
   }
 
   getQuestionnaireObserver(){
-    this.welcomeService.getQuestionnairesObserve().subscribe(
+    this.welcomeService.getQuestionnairesObserve().then(promise => promise.subscribe(
       questionnaireReceived => this.questionnaireObserve = questionnaireReceived
-    );
+    ));
   }
 
   goToWork(){

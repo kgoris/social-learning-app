@@ -24,7 +24,11 @@ export class StudentService {
     }
 
     public findByLogin(login:string): Observable<Student>{
-        return this.httpClient.get<Student>(this.configService.student_by_login_url,  {headers: this.header})
+        return this.httpClient.get<Student>(this.configService.student_by_login_url + '/' + login,  {headers: this.header})
     }
     
+    public linkObervedUserOnAUser(currentUsername: string, observedUsername: string): Observable<any>{
+        return this.httpClient.get<any>(this.configService.student_link_observed_url + 
+            '?currentUsername=' + currentUsername + '&observedUsername=' + observedUsername,  {headers: this.header})
+    }
 }

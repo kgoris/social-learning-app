@@ -3,10 +3,11 @@ import { ConfigService } from '../service/config.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Student } from '../modeles/student';
-import { AuthService } from '../service/auth.service';
 import { QuestionnaireQuery } from '../modeles/questionnaire-query';
 import { ApiService } from '../service/api.service';
 import { Questionnaire } from '../modeles/questionnaire';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
 
 @Injectable()
 export class WelcomeService {
@@ -15,16 +16,17 @@ export class WelcomeService {
     
     constructor(
             private httpClient: HttpClient,
-            private authService: AuthService,
-            private config: ConfigService){}
+            private config: ConfigService,
+            private keycloakService: KeycloakService){}
 
     getQuestionnairesWork(student: Student){
-        let questionnaireQuery : QuestionnaireQuery = new QuestionnaireQuery(student, QuestionnaireQuery.WORK_ACCESS_TYPE);
+        let questionnaireQuery : QuestionnaireQuery = new QuestionnaireQuery(student.username, QuestionnaireQuery.WORK_ACCESS_TYPE);
         return this.getQuestionnaires(questionnaireQuery);
     }
 
-    getQuestionnairesObserve(){
-        let questionnaireQuery : QuestionnaireQuery = new QuestionnaireQuery(this.authService.getStudentInfo(), QuestionnaireQuery.OBSERVE_ACCESS_TYPE);
+    async getQuestionnairesObserve(){
+        let userProfile: KeycloakProfile = await this.keycloakService.loadUserProfile(); 
+        let questionnaireQuery : QuestionnaireQuery = new QuestionnaireQuery(userProfile.username, QuestionnaireQuery.OBSERVE_ACCESS_TYPE);
         return this.getQuestionnaires(questionnaireQuery);
     }
 
@@ -33,7 +35,7 @@ export class WelcomeService {
     }
 
     getQuestionnaireLocked(student:Student){
-        let questionnaireQuery : QuestionnaireQuery = new QuestionnaireQuery(student, QuestionnaireQuery.WORK_ACCESS_TYPE);
+        let questionnaireQuery : QuestionnaireQuery = new QuestionnaireQuery(student.username, QuestionnaireQuery.WORK_ACCESS_TYPE);
         return this.httpClient.post<Questionnaire[]>(this.config.questionnaires_locked, questionnaireQuery);
     }
 

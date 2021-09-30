@@ -4,7 +4,7 @@ import { KeycloakService } from 'keycloak-angular';
 import { KeycloakProfile } from 'keycloak-js';
 import { Student } from '../modeles/student';
 import { ActivityService } from '../service/activity.service';
-import { AuthService } from '../service/auth.service';
+import { StudentService } from '../service/student.service';
 import { UserService } from '../service/user.service';
 
 @Component({
@@ -18,36 +18,35 @@ export class HeaderComponent implements OnInit {
 
   observedStudent: Student;
   public userProfile: KeycloakProfile | null = null;
+  public currentUser: Student;
   
-  constructor(private authService: AuthService,
+  constructor(
     private menu : MenuController,
-    private userService: UserService,
+    private studentService: StudentService,
     private activityService: ActivityService,
     private keycloakService: KeycloakService) { }
 
   async ngOnInit() {
-    this.userService.currentObservedStudent.subscribe(student => this.observedStudent = student); 
     this.userProfile = await this.keycloakService.loadUserProfile(); 
-    
+    //this.keycloakService.loadUserProfile().then(userProfile => {
+    //  this.userProfile = userProfile
+    //  
+    //});    
   }
 
   getUserFirstName(){
-    return this.userProfile.firstName;
+    return this.userProfile?.firstName;
   }
 
   getUserName(){
-    return this.userProfile.lastName;
+    return this.userProfile?.lastName;
   }
   getMenuId(){
     return this.menuIdCustom;
   }
 
   home(){
-    return this.activityService.notifyHome(this.authService.getStudentInfo());
-  }
-
-  authenticated(){
-    return this.authService.isLoggedIn();
+    return this.activityService.notifyHome(this.userProfile.username);
   }
 
   openMenu(){
@@ -58,7 +57,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    this.activityService.notifiyLogout(this.authService.getStudentInfo())
+    this.activityService.notifiyLogout(this.userProfile.username)
     this.keycloakService.logout();
   }
 }

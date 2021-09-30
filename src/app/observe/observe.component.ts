@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { KeycloakService } from 'keycloak-angular';
 import { Activity } from '../modeles/activity';
 import { Student } from '../modeles/student';
 import { ActivityService } from '../service/activity.service';
-import { AuthService } from '../service/auth.service';
 import { StudentService } from '../service/student.service';
 import { UserService } from '../service/user.service';
 import { WebsocketServiceService } from '../websocket-service.service';
@@ -23,7 +23,7 @@ export class ObserveComponent implements OnInit {
     private activityService: ActivityService,
     private websocketService: WebsocketServiceService,
     private studentService: StudentService,
-    private authservice: AuthService
+    private keycloakService: KeycloakService
   ) { }
 
   ngOnInit() {
@@ -32,12 +32,10 @@ export class ObserveComponent implements OnInit {
     )
   }
 
-  observe(activity:Activity){
+  async observe(activity:Activity){
     this.websocketService.onActivityReceived(activity);
-    let student: Student = this.authservice.getStudentInfo();
-    student.studentObserved = activity.student;
-    this.authservice.storeStudentInfo(student);
-    this.studentService.updateStudent(activity.student).subscribe();
+    let userProfile = await this.keycloakService.loadUserProfile();
+    this.studentService.linkObervedUserOnAUser(userProfile.username, activity.studentUsername).subscribe();
   }
 
   isActivitiesPresent(){

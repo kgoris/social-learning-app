@@ -7,7 +7,6 @@ import { Activity } from "../modeles/activity";
 import { Proposition } from "../modeles/proposition";
 import { Student } from "../modeles/student";
 import { StudentQuestion } from "../modeles/student-question";
-import { AuthService } from "./auth.service";
 import { ConfigService } from "./config.service";
 
 const ACTION_TYPE_DISPLAY: string = "DISPLAY";

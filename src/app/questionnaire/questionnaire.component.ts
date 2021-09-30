@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Form, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { merge, Observable } from 'rxjs';
 import { mergeMap, switchMap } from 'rxjs/operators';
 import { Answer } from '../modeles/answer';
 import { StudentQuestion } from '../modeles/student-question';
@@ -11,11 +11,11 @@ import * as uuid from 'uuid';
 import { WebsocketServiceService } from '../websocket-service.service';
 import { Student } from '../modeles/student';
 import { ActivityService } from '../service/activity.service';
-import { AuthService } from '../service/auth.service';
 import { Proposition } from '../modeles/proposition';
 import { Activity } from '../modeles/activity';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakProfile } from 'keycloak-js';
+import { StudentService } from '../service/student.service';
 
 @Component({
   selector: 'app-questionnaire',
@@ -33,7 +33,8 @@ export class QuestionnaireComponent implements OnInit {
   activitySent: boolean = false;
   observeMode : boolean = false;
   connectedStudentUsername: string;
-  
+  currentStudentQuestionId: string;
+  questionnaireId: string;
   currentStudentQuestion : StudentQuestion;
   loadingStudentQuestion : Observable<StudentQuestion>;
 
@@ -43,7 +44,8 @@ export class QuestionnaireComponent implements OnInit {
               private welcomeService: WelcomeService,
               private activityService: ActivityService,
               private keycloakService: KeycloakService,
-              private websocketService: WebsocketServiceService
+              private websocketService: WebsocketServiceService,
+              private studentService: StudentService
               ) { }
 
   ngOnInit() {
@@ -60,23 +62,24 @@ export class QuestionnaireComponent implements OnInit {
     this.initFormGroup();
     this.route.paramMap.pipe(
       mergeMap(params => {
-          let questionnaireId = params.get('qid');
-          let currentStudentQuestionId = params.get('currentSudentQuestionId');
+          this.questionnaireId = params.get('qid');
+          this.currentStudentQuestionId = params.get('currentSudentQuestionId');
           this.connectedStudentUsername = params.get('studentUsername');
           this.observeMode = params.get('readonly') == "true";
+          return this.studentService.findByLogin(params.get('studentUsername'))
 
-          if(currentStudentQuestionId){
-            //get the related student question
-            return this.studentQuestionService.findById(currentStudentQuestionId)
-          }else if(questionnaireId){
-            //create a new student question for the related questionnaireId & current student
-            return this.studentQuestionService.createStudentQuestion(questionnaireId)
-          }
-          ;
+      }),mergeMap(student => {
+        if(this.currentStudentQuestionId){
+          //get the related student question
+          return this.studentQuestionService.findById(this.currentStudentQuestionId)
+        }else if(this.questionnaireId){
+          //create a new student question for the related questionnaireId & current student
+          return this.studentQuestionService.createStudentQuestion(this.questionnaireId, student)
         }
-      )
-    ).subscribe(async value => {
-      this.currentStudentQuestion = value;
+      }) 
+          
+    ).subscribe(async studQuestion => {
+      this.currentStudentQuestion = studQuestion;
       let userProfile: KeycloakProfile = await this.keycloakService.loadUserProfile();
       if(this.connectedStudentUsername === userProfile.username){
         this.activityService.notifyDisplayQuestionnaire(this.currentStudentQuestion.student.username, this.currentStudentQuestion.id);
@@ -218,13 +221,19 @@ export class QuestionnaireComponent implements OnInit {
     this.triggerFormValidation();
     if(this.checkIfFormValid()){
       this.studentQuestionService.save(this.currentStudentQuestion).subscribe(value =>{
-            this.studentQuestionService.lockStudentQuestions(this.currentStudentQuestion.questionnaire.id).subscribe(
+            //this.studentQuestionService.lockStudentQuestions(this.currentStudentQuestion.questionnaire.id).subscribe(
+            //  value => {
+            //    this.router.navigate(['/results', this.currentStudentQuestion.questionnaire.id, this.currentStudentQuestion.student.username, 'false']);
+            //  }
+            //)
+
+            this.studentQuestionService.lockStudentQuestions(this.currentStudentQuestion.questionnaire.id).then(premise => premise.subscribe(
               value => {
                 this.router.navigate(['/results', this.currentStudentQuestion.questionnaire.id, this.currentStudentQuestion.student.username, 'false']);
               }
-            )
+            ))
           }
-      
+            
       )
       
     }

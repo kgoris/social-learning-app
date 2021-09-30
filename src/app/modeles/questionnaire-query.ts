@@ -4,11 +4,11 @@ export class QuestionnaireQuery{
     public static readonly WORK_ACCESS_TYPE = "WORK";
     public static readonly OBSERVE_ACCESS_TYPE = "OBSERVE";
 
-    studentDto:Student;
     accessType: string;
+    studentUsername: string;
 
-    constructor(student:Student, accessType:string){
-        this.studentDto = student;
+    constructor(studentUsername: string, accessType:string){
+        this.studentUsername = studentUsername;
         this.accessType = accessType;
     }
 }
