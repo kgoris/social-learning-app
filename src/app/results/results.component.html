@@ -1,11 +1,10 @@
 
 <app-header menuIdCustom="resultHeader"></app-header>
 <ion-content *ngIf="results" class="ion-padding">
-  
- <ng-template *ngIf="!results.errors else arf">
-    <p>Great! All your response are correct!</p>
-  </ng-template>
-  <ng-template  #arf>
+ <ng-container *ngIf="!results.errors">
+    <p>Great! All your responses are correct!</p>
+  </ng-container>
+  <ng-container  *ngIf="results.errors">
     <ion-list>
       <ion-item-group >
         <ion-item *ngFor="let errorItem of results.errors">
@@ -25,14 +24,15 @@
         </ion-item>
       </ion-item-group>
     </ion-list>
-    <ion-row>
-      <ion-col>
-        <ion-button [disabled] = "observeMode" color="tertiary" size="medium" expand="block" [routerLink]="['/work', connectedStudentUsername, 'false']">Go back to exercices</ion-button>
-      </ion-col>    
-      <ion-col>
-        <ion-button [disabled] = "observeMode" color="danger" size="medium" expand="block" (click)="reset()" >Restart the questionnaire</ion-button>
-      </ion-col>      
-    </ion-row>
-  </ng-template>
+    
+  </ng-container>
+  <ion-row>
+    <ion-col>
+      <ion-button [disabled] = "observeMode" color="tertiary" size="medium" expand="block" [routerLink]="['/work', userProfile.username , 'false']">Go back to exercices</ion-button>
+    </ion-col>    
+    <ion-col>
+      <ion-button [disabled] = "observeMode" color="danger" size="medium" expand="block" (click)="reset()" >Restart the questionnaire</ion-button>
+    </ion-col>      
+  </ion-row>
 </ion-content>
 

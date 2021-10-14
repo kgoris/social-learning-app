@@ -23,6 +23,7 @@ export class WorkComponent implements OnInit {
   questionnaires: Questionnaire[];
   lockedQuestionnaires: Questionnaire[];
   workingStudent: Student;  
+  connectedUser: KeycloakProfile;
   activitySent: boolean = false;
   observeMode : boolean = false;
 
@@ -47,47 +48,43 @@ export class WorkComponent implements OnInit {
         let studentUsername = params.get('studentUsername');
         this.observeMode = params.get('readonly') == "true";
         return this.studentService.findByLogin(studentUsername);
-      })
-    ).subscribe(async student => {
-      this.workingStudent = student;
-      //TODO refactor
-      let userProfile: KeycloakProfile = await this.keycloakService.loadUserProfile(); 
+      }), mergeMap(student => {
+        this.workingStudent = student;
+        this.welcomeService.getQuestionnairesWork(this.workingStudent).subscribe(
+          questionnaireReceived => this.questionnaires = questionnaireReceived
+        );
+        this.welcomeService.getQuestionnaireLocked(this.workingStudent).subscribe(
+          lq => this.lockedQuestionnaires = lq
+        );
+        return this.keycloakService.loadUserProfile(); 
+      }),mergeMap(connectedUser => {
+        this.connectedUser = connectedUser;
+        if(!this.activitySent && this.workingStudent.username === this.connectedUser.username){
+          this.activityService.notifyDisplayWorkActivity(this.workingStudent.username);
+          this.activitySent = true;
+        }
 
-      if(!this.activitySent && this.workingStudent.username === userProfile.username){
-        this.activityService.notifyDisplayWorkActivity(this.workingStudent.username);
-        this.activitySent = true;
-      }
-      
-      this.studentQuestionService.findStudentQuestionsByStudent(student.username)
-      .subscribe(
-        value => {
-          this.studentQuestions = value;        
-        } 
-      );
-      this.welcomeService.getQuestionnairesWork(this.workingStudent).subscribe(
-        questionnaireReceived => this.questionnaires = questionnaireReceived
-      );
-      this.welcomeService.getQuestionnaireLocked(this.workingStudent).subscribe(
-        lq => this.lockedQuestionnaires = lq
-      );
+        return this.studentQuestionService.findStudentQuestionsByStudent(this.workingStudent.username);
+      })
+    ).subscribe(async studentQuestions => {
+      this.studentQuestions = studentQuestions;
     })
-    
   }
 
+  navigateToWork(){
+    this.router.navigate(['/work', this.connectedUser.username , 'false']);
+
+  }
+  
   selectAStudentQuestion(studentQuestion: StudentQuestion){
 
   }
   
-  startNewQuestionnaire(questionnaire: Questionnaire){
-    
-  }
+  startNewQuestionnaire(questionnaire: Questionnaire){}
   
-  startReviewModule(){
-
-  }
+  startReviewModule(){}
 
   visitQuestionnaire(questionnaireToVisit: Questionnaire){
-    
     
     //this.studentQuestionService.visit(questionnaireToVisit.id).subscribe(
     //  sq => {

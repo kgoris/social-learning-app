@@ -18,7 +18,7 @@ export class ResultsComponent implements OnInit {
 
   results: Results;
   observeMode : boolean = false;
-  connectedStudentUsername: string;
+  studentUsername: string;
   connectedStudent : Student;
   questionnaireId: string;
   public userProfile: KeycloakProfile | null = null;
@@ -36,19 +36,20 @@ export class ResultsComponent implements OnInit {
     this.route.paramMap.pipe(
       mergeMap(params => {
           this.questionnaireId = params.get('id');
-          this.connectedStudentUsername = params.get('studentUsername');
+          this.studentUsername = params.get('studentUsername');
           this.observeMode = params.get('readonly') == "true";
           return this.studentService.findByLogin(params.get('studentUsername'))
         }
-      ), mergeMap(student => {
-        this.connectedStudent = student;
+      ), mergeMap(student=> {
         return this.studentQuestionService.resuls(this.questionnaireId, student);
-      })
-    ).subscribe(async results => {
-        let userProfile: KeycloakProfile = await this.keycloakService.loadUserProfile(); 
+      }), mergeMap(results => {
         this.results = results;
-        if(this.connectedStudentUsername === userProfile.username){
-          this.activityService.notifyDisplayResume(this.connectedStudentUsername, +this.questionnaireId);    
+        return this.keycloakService.loadUserProfile();
+      })
+    ).subscribe(connectedUser => {
+        this.userProfile = connectedUser;
+        if(this.studentUsername === this.userProfile.username){
+          this.activityService.notifyDisplayResume(this.studentUsername, +this.questionnaireId);    
         }    
       }
     )  
