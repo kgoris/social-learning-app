@@ -27,6 +27,8 @@ import { ObserveComponent } from './observe/observe.component';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { initializer } from './app-init';
 import { AuthGuard } from './guard/auth-guard';
+import { ChoosingComponent } from './choosing/choosing.component';
+import { LearningComponent } from './learning/learning.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { AuthGuard } from './guard/auth-guard';
     HeaderComponent,
     QuestionnaireComponent,
     ResultsComponent,
-    ObserveComponent
+    ObserveComponent,
+    ChoosingComponent,
+    LearningComponent
   ],
   entryComponents: [],
   imports: [

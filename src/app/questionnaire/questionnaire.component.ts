@@ -30,9 +30,10 @@ export class QuestionnaireComponent implements OnInit {
   multipleChoiceFormControl: FormControl;
   uuidRef: string;
   workingStudent: Student;  
+  connectedStudent: KeycloakProfile;
   activitySent: boolean = false;
   observeMode : boolean = false;
-  connectedStudentUsername: string;
+  workingStudentUsername: string;
   currentStudentQuestionId: string;
   questionnaireId: string;
   currentStudentQuestion : StudentQuestion;
@@ -64,24 +65,27 @@ export class QuestionnaireComponent implements OnInit {
       mergeMap(params => {
           this.questionnaireId = params.get('qid');
           this.currentStudentQuestionId = params.get('currentSudentQuestionId');
-          this.connectedStudentUsername = params.get('studentUsername');
+          this.workingStudentUsername = params.get('studentUsername');
           this.observeMode = params.get('readonly') == "true";
           return this.studentService.findByLogin(params.get('studentUsername'))
 
       }),mergeMap(student => {
-        if(this.currentStudentQuestionId){
-          //get the related student question
-          return this.studentQuestionService.findById(this.currentStudentQuestionId)
-        }else if(this.questionnaireId){
-          //create a new student question for the related questionnaireId & current student
-          return this.studentQuestionService.createStudentQuestion(this.questionnaireId, student)
-        }
-      }) 
+        this.workingStudent = student;
+        return this.keycloakService.loadUserProfile();
+      }), mergeMap(connectedUser => {
+          this.connectedStudent = connectedUser
+          if(this.currentStudentQuestionId){
+            //get the related student question
+            return this.studentQuestionService.findById(this.currentStudentQuestionId)
+          }else if(this.questionnaireId && this.workingStudent?.username === this.connectedStudent?.username){
+            //create a new student question for the related questionnaireId & current student
+            return this.studentQuestionService.createStudentQuestion(this.questionnaireId, this.workingStudent)
+          }
+      })
           
     ).subscribe(async studQuestion => {
       this.currentStudentQuestion = studQuestion;
-      let userProfile: KeycloakProfile = await this.keycloakService.loadUserProfile();
-      if(this.connectedStudentUsername === userProfile.username){
+      if(this.workingStudentUsername === this.connectedStudent.username){
         this.activityService.notifyDisplayQuestionnaire(this.currentStudentQuestion.student.username, this.currentStudentQuestion.id);
         this.activitySent = true;
       }

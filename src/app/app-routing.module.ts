@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { ChoosingComponent } from './choosing/choosing.component';
 import { AuthGuard } from './guard/auth-guard';
+import { LearningComponent } from './learning/learning.component';
 import { ObserveComponent } from './observe/observe.component';
 import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
 import { ResultsComponent } from './results/results.component';
@@ -32,6 +34,16 @@ const routes: Routes = [
   { 
     path: 'questionnaire/:currentSudentQuestionId/:studentUsername/:readonly', 
     component: QuestionnaireComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'learning/:studentUsername/:readonly/:currentSudentQuestionId',
+    component: LearningComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'choosing/:studentUsername/:readonly/:currentSudentQuestionId',
+    component: ChoosingComponent,
     canActivate: [AuthGuard]
   },
   { 

@@ -1,0 +1,17 @@
+<app-header menuIdCustom="{{questionHeader()}}"></app-header>
+<ion-content>
+  <ion-card>
+    <div>
+      <ion-button [disabled]="observeMode" (click)="launchLearning()">
+        <ion-icon name="play-outline"></ion-icon>
+        <ion-label>Learning Module</ion-label>
+      </ion-button>
+    </div>
+    <div> 
+      <ion-button [disabled]="observeMode" (click)="launchQuestionnaire()">
+        <ion-icon name="play-outline"></ion-icon>
+        <ion-label>Questionnaire</ion-label>
+      </ion-button>
+    </div>
+  </ion-card>
+</ion-content>
