@@ -8,7 +8,7 @@
     </ion-item>
     <ion-card-content>
       <ion-list>
-        <ion-item [disabled]="observeMode" *ngFor="let studentQuestion of studentQuestions" [routerLink]="['/questionnaire', studentQuestion.id, studentQuestion.student.id, 'false']">
+        <ion-item [disabled]="observeMode" *ngFor="let studentQuestion of studentQuestions" [routerLink]="['/choosing', studentQuestion.student.username, 'false', studentQuestion.question.id, studentQuestion.id]">
           <ion-label>{{studentQuestion.questionnaire.title}} ({{studentQuestion.question.sequenceNumber}}/{{studentQuestion.questionnaire.questionCount}})</ion-label>
         </ion-item>
       </ion-list>
@@ -28,7 +28,7 @@
           <ion-icon name="sync-outline" slot="start"></ion-icon>
           Learn my vocabulary
         </ion-item>
-        <ion-item [disabled]="observeMode" *ngFor="let questionnaire of questionnaires" [routerLink]="['/questionnaire/new', questionnaire.id, this.workingStudent.username, 'false']" color="medium" button>
+        <ion-item [disabled]="observeMode" *ngFor="let questionnaire of questionnaires" [routerLink]="['/choosing/new', this.workingStudent.username, 'false', questionnaire.id]" color="medium" button>
           <ion-icon name="construct-outline" slot="start"></ion-icon>
           <ion-row>
             <ion-label>Start {{questionnaire.title}}</ion-label>

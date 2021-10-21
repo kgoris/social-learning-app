@@ -29,7 +29,8 @@ export class LearningComponent implements OnInit {
   questionnaire: Questionnaire;
   index: number = 0;
   learningItem: LearningItem;
-
+  questionnaireId: string;
+  
   constructor(private route: ActivatedRoute,
               private router: Router,
               private keycloakService: KeycloakService,
@@ -40,6 +41,7 @@ export class LearningComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap.pipe(
       mergeMap(params => {
+          this.questionnaireId = params.get('qid');
           this.workingStudentUsername = params.get('studentUsername');
           this.currentStudentQuestionId = params.get('currentSudentQuestionId');
           this.observeMode = params.get('readonly') == "true";

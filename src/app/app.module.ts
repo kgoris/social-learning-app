@@ -29,6 +29,7 @@ import { initializer } from './app-init';
 import { AuthGuard } from './guard/auth-guard';
 import { ChoosingComponent } from './choosing/choosing.component';
 import { LearningComponent } from './learning/learning.component';
+import { QuestionnaireService } from './service/questionnaire.service';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,8 @@ import { LearningComponent } from './learning/learning.component';
     ActivityService,
     MenuController,
     StudentService,
+    
+    QuestionnaireService,
     AuthGuard,
    /**{
       provide: HTTP_INTERCEPTORS,

@@ -1,5 +1,5 @@
 <app-header menuIdCustom="{{questionHeader()}}"></app-header>
-<ion-content>
+<ion-content *ngIf="currentStudentQuestion">
   <ion-card>
     <ion-card-header>
       <ion-card-title>{{currentStudentQuestion.questionnaire.title}}</ion-card-title>

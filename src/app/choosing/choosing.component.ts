@@ -27,6 +27,7 @@ export class ChoosingComponent implements OnInit {
   connectedStudent: KeycloakProfile;
   uuidRef: string;
   questionnaire: Questionnaire;
+  questionnaireId: string;
 
 
   constructor(private route: ActivatedRoute,
@@ -40,6 +41,7 @@ export class ChoosingComponent implements OnInit {
     this.route.paramMap.pipe(
       mergeMap(params => {
           this.workingStudentUsername = params.get('studentUsername');
+          this.questionnaireId = params.get('qid');
           this.currentStudentQuestionId = params.get('currentSudentQuestionId');
           this.observeMode = params.get('readonly') == "true";
           return this.studentService.findByLogin(params.get('studentUsername'))
@@ -49,10 +51,10 @@ export class ChoosingComponent implements OnInit {
         return this.keycloakService.loadUserProfile();
       }), mergeMap(connectedStudent => {
         this.connectedStudent = connectedStudent;
-        return this.studentQuestionService.findById(this.currentStudentQuestionId)
+        return this.questionnaireService.findQuestionnaireById(this.questionnaireId)
       })      
-    ).subscribe(studentQuestion => {
-      this.currentStudentQuestion = studentQuestion;
+    ).subscribe(questionnaire => {
+      this.questionnaire = questionnaire;
     })
   }
 
@@ -64,11 +66,19 @@ export class ChoosingComponent implements OnInit {
   }
 
   launchQuestionnaire(){
-    this.router.navigate(['/questionnaire', this.currentStudentQuestionId, this.workingStudentUsername, 'false']);
+    if(this.currentStudentQuestionId){
+      this.router.navigate(['/questionnaire', this.currentStudentQuestionId, this.workingStudentUsername, 'false']);
+    }else {
+      this.router.navigate(['/questionnaire/new', this.questionnaire.id, this.workingStudentUsername, 'false']);
+    }
   }
 
   launchLearning(){
-    this.router.navigate(['/learning', this.workingStudentUsername, 'false', this.currentStudentQuestionId]);
+    if(this.currentStudentQuestionId){
+      this.router.navigate(['/learning', this.workingStudentUsername, 'false', this.questionnaire.id, this.currentStudentQuestionId]);
+    }else {
+      this.router.navigate(['/learning/new', this.workingStudentUsername, 'false', this.questionnaire.id]);
+    }
   }
 
 }

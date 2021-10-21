@@ -37,12 +37,23 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'learning/:studentUsername/:readonly/:currentSudentQuestionId',
+    path: 'learning/:studentUsername/:readonly/:qid/:currentSudentQuestionId',
     component: LearningComponent,
     canActivate: [AuthGuard]
   },
   {
-    path: 'choosing/:studentUsername/:readonly/:currentSudentQuestionId',
+    path: 'learning/new/:studentUsername/:readonly/:qid',
+    component: LearningComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'choosing/:studentUsername/:readonly/:qid/:currentSudentQuestionId',
+    component: ChoosingComponent,
+    canActivate: [AuthGuard]
+  },
+  
+  {
+    path: 'choosing/new/:studentUsername/:readonly/:qid',
     component: ChoosingComponent,
     canActivate: [AuthGuard]
   },
